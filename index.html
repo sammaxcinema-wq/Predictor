@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FootyAI – Football Prediction SaaS</title>
+    <title>FootyAI – World Cup 2026 Predictions</title>
     <!-- Font Awesome 6 (Free) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <!-- Google Fonts: Inter -->
@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
-        /* ----- RESET & ROOT ----- */
+        /* ----- RESET & ROOT (same as before) ----- */
         *,
         *::before,
         *::after {
@@ -62,10 +62,6 @@
             outline: none;
             background: none;
             color: inherit;
-        }
-        img {
-            max-width: 100%;
-            display: block;
         }
         .container {
             max-width: 1280px;
@@ -139,6 +135,11 @@
         }
         .btn-danger:hover {
             background: #c0392b;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         /* ----- HEADER / NAV ----- */
@@ -822,6 +823,25 @@
             text-decoration: underline;
         }
 
+        /* ----- LOADER ----- */
+        .loader {
+            border: 4px solid var(--bg-secondary);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         /* ----- FOOTER ----- */
         .footer {
             margin-top: auto;
@@ -973,12 +993,12 @@
     <section class="hero tab-content active" id="tab-dashboard">
         <div class="container">
             <h1>
-                AI-Powered Football<br />
+                AI-Powered World Cup 2026<br />
                 <span class="highlight">Predictions &amp; Insights</span>
             </h1>
             <p>
                 Get accurate 1X2, BTTS, Over/Under, Correct Score and xG predictions
-                powered by our advanced machine learning engine.
+                powered by our advanced machine learning engine — now with <strong>real match data</strong>.
             </p>
             <div class="hero-actions">
                 <button class="btn btn-primary" id="heroCta">
@@ -990,16 +1010,16 @@
             </div>
             <div class="hero-stats" id="dashboardStats">
                 <div class="stat">
-                    <div class="number" id="statAccuracy">87%</div>
+                    <div class="number" id="statAccuracy">--%</div>
                     <div class="label">Accuracy Rate</div>
                 </div>
                 <div class="stat">
-                    <div class="number" id="statMatches">1,240+</div>
-                    <div class="label">Matches Predicted</div>
+                    <div class="number" id="statMatches">--</div>
+                    <div class="label">Matches</div>
                 </div>
                 <div class="stat">
-                    <div class="number" id="statLeagues">32</div>
-                    <div class="label">Leagues Covered</div>
+                    <div class="number" id="statLeagues">--</div>
+                    <div class="label">Leagues</div>
                 </div>
             </div>
         </div>
@@ -1009,24 +1029,25 @@
     <section class="container tab-content" id="tab-matches">
         <div class="section-header">
             <div>
-                <h2 class="section-title"><i class="fas fa-bolt" style="color:var(--accent);margin-right:8px;"></i> Live Matches</h2>
-                <p class="section-sub">Real‑time predictions for today's fixtures</p>
+                <h2 class="section-title"><i class="fas fa-bolt" style="color:var(--accent);margin-right:8px;"></i> World Cup 2026 Matches</h2>
+                <p class="section-sub">Live, scheduled & finished matches from the tournament</p>
             </div>
             <div class="filters">
-                <select id="leagueFilter">
-                    <option value="all">All Leagues</option>
+                <select id="groupFilter">
+                    <option value="all">All Groups</option>
                     <!-- populated by JS -->
                 </select>
                 <select id="statusFilter">
                     <option value="all">All Statuses</option>
-                    <option value="LIVE">Live</option>
-                    <option value="Scheduled">Scheduled</option>
-                    <option value="Finished">Finished</option>
+                    <option value="live">Live</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="finished">Finished</option>
                 </select>
                 <button class="btn btn-primary btn-sm" id="refreshMatchesBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
             </div>
         </div>
 
+        <div id="matchesLoader" class="loader"></div>
         <div class="matches-grid" id="matchesGrid">
             <!-- match cards injected by JS -->
         </div>
@@ -1040,7 +1061,7 @@
             <div class="ai-badge">
                 <i class="fas fa-microchip"></i>
                 <span>Confidence:</span>
-                <span class="value" id="confidenceValue">92%</span>
+                <span class="value" id="confidenceValue">--%</span>
                 <span style="color:var(--text-muted);font-size:0.8rem;">on today's matches</span>
             </div>
             <button class="btn btn-primary btn-sm" id="refreshConfidenceBtn">
@@ -1054,16 +1075,17 @@
         <div class="section-header">
             <div>
                 <h2 class="section-title"><i class="fas fa-chart-line" style="color:var(--accent);margin-right:8px;"></i> AI Predictions</h2>
-                <p class="section-sub">Detailed forecasts for upcoming and live matches</p>
+                <p class="section-sub">Detailed forecasts for every match</p>
             </div>
             <button class="btn btn-primary btn-sm" id="refreshPredTable"><i class="fas fa-sync-alt"></i> Refresh</button>
         </div>
+        <div id="predLoader" class="loader"></div>
         <div style="overflow-x:auto;">
             <table class="pred-table" id="predTable">
                 <thead>
                     <tr>
                         <th>Match</th>
-                        <th>League</th>
+                        <th>Group</th>
                         <th>Prediction Type</th>
                         <th>Outcome</th>
                         <th>Confidence</th>
@@ -1113,7 +1135,7 @@
             </div>
             <div class="admin-card">
                 <h3><i class="fas fa-robot"></i> AI Model</h3>
-                <p style="color:var(--text-secondary);">Current accuracy: <strong id="adminAccuracy">87%</strong></p>
+                <p style="color:var(--text-secondary);">Current accuracy: <strong id="adminAccuracy">--%</strong></p>
                 <button class="btn btn-primary btn-sm" id="retrainBtn"><i class="fas fa-sync-alt"></i> Retrain Model</button>
                 <p style="color:var(--text-muted);font-size:0.8rem;margin-top:8px;">Last trained: Today 10:32 AM</p>
             </div>
@@ -1187,43 +1209,11 @@
 
     <script>
         // ================================================================
-        //  DATA & STATE
+        //  REAL DATA FETCH – World Cup 2026 API (no key required)
         // ================================================================
-        const LEAGUES = [
-            'Premier League', 'La Liga', 'Bundesliga', 'Serie A', 'Ligue 1',
-            'Champions League', 'Europa League', 'World Cup', 'Copa América',
-            'African Cup of Nations', 'MLS', 'Eredivisie', 'Primeira Liga'
-        ];
-
-        const TEAMS = [
-            ['Liverpool', 'Arsenal'],
-            ['Real Madrid', 'Barcelona'],
-            ['Bayern Munich', 'Dortmund'],
-            ['Inter Milan', 'AC Milan'],
-            ['PSG', 'Marseille'],
-            ['Man City', 'Chelsea'],
-            ['Atletico Madrid', 'Sevilla'],
-            ['Napoli', 'Roma'],
-            ['Tottenham', 'Man United'],
-            ['Valencia', 'Villarreal'],
-            ['Ajax', 'PSV'],
-            ['Benfica', 'Porto'],
-            ['Brazil', 'Argentina'],
-            ['France', 'England'],
-            ['Germany', 'Spain'],
-            ['Italy', 'Portugal'],
-            ['Senegal', 'Nigeria'],
-            ['USA', 'Mexico'],
-            ['South Korea', 'Japan'],
-            ['Australia', 'New Zealand']
-        ];
-
-        const PRED_TYPES = ['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG'];
-        const PRED_OUTCOMES = ['Home', 'Away', 'Draw', 'Over 2.5', 'Under 2.5', 'BTTS Yes', 'BTTS No', '1-0', '2-1', '1-1', '0-0',
-            '3-1'
-        ];
-
-        let matches = [];
+        const API_BASE = 'https://worldcup26.ir';
+        let allMatches = [];
+        let allTeams = {};
         let predictions = [];
         let leaderboardUsers = [];
         let isLoggedIn = false;
@@ -1231,101 +1221,275 @@
         // ================================================================
         //  HELPERS
         // ================================================================
-        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
         function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
         function getRandomFloat(min, max) { return +(Math.random() * (max - min) + min).toFixed(1); }
 
-        // Generate a match
-        function generateMatch(id) {
-            const league = getRandom(LEAGUES);
-            const teamPair = getRandom(TEAMS);
-            const statusRand = Math.random();
-            let status;
-            if (statusRand < 0.3) status = 'LIVE';
-            else if (statusRand < 0.6) status = 'Finished';
-            else status = 'Scheduled';
-            const isLive = status === 'LIVE';
-            const isFinished = status === 'Finished';
-            let homeScore = null,
-                awayScore = null;
-            if (isFinished) {
-                homeScore = getRandomInt(0, 4);
-                awayScore = getRandomInt(0, 4);
-            } else if (isLive) {
-                homeScore = getRandomInt(0, 3);
-                awayScore = getRandomInt(0, 3);
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+        // Generate an AI prediction for a match (simulated based on stats)
+        function generatePrediction(match) {
+            // Use match data to influence prediction
+            const homeStrength = match.homeTeamGoals !== undefined ? match.homeTeamGoals : getRandomInt(0, 3);
+            const awayStrength = match.awayTeamGoals !== undefined ? match.awayTeamGoals : getRandomInt(0, 3);
+            const totalGoals = homeStrength + awayStrength;
+
+            const predTypes = ['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG'];
+            const type = getRandom(predTypes);
+            let outcome;
+            let confidence = 60 + (Math.random() * 30); // 60-90
+
+            switch (type) {
+                case '1X2':
+                    if (homeStrength > awayStrength) outcome = 'Home';
+                    else if (homeStrength < awayStrength) outcome = 'Away';
+                    else outcome = 'Draw';
+                    break;
+                case 'BTTS':
+                    outcome = (homeStrength > 0 && awayStrength > 0) ? 'BTTS Yes' : 'BTTS No';
+                    break;
+                case 'Over/Under':
+                    outcome = totalGoals > 2.5 ? 'Over 2.5' : 'Under 2.5';
+                    break;
+                case 'Correct Score':
+                    outcome = `${homeStrength}-${awayStrength}`;
+                    break;
+                case 'xG':
+                    outcome = `${(homeStrength * 0.8 + Math.random() * 0.5).toFixed(1)} - ${(awayStrength * 0.8 + Math.random() * 0.5).toFixed(1)}`;
+                    break;
+                default:
+                    outcome = 'Draw';
             }
-            const time = isLive ? `${getRandomInt(20, 89)}'` :
-                isFinished ? 'FT' :
-                `${String(getRandomInt(12, 22)).padStart(2, '0')}:${String(getRandomInt(0, 59)).padStart(2, '0')}`;
-            const predType = getRandom(PRED_TYPES);
-            const predOutcome = getRandom(PRED_OUTCOMES);
-            const confidence = getRandomInt(60, 98);
-            return {
-                id,
-                league,
-                home: teamPair[0],
-                away: teamPair[1],
-                homeScore,
-                awayScore,
-                status,
-                time,
-                predType,
-                predOutcome,
-                confidence
-            };
+            return { type, outcome, confidence: Math.round(confidence) };
         }
 
-        function generateMatches(count = 24) {
-            const arr = [];
-            for (let i = 0; i < count; i++) {
-                arr.push(generateMatch(i + 1));
+        // ================================================================
+        //  FETCH REAL DATA
+        // ================================================================
+        async function fetchMatches() {
+            try {
+                const response = await fetch(`${API_BASE}/get/games`);
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                const data = await response.json();
+                return data.games || [];
+            } catch (error) {
+                console.error('Error fetching matches:', error);
+                return null;
             }
-            return arr;
         }
 
-        // Generate predictions from matches
-        function generatePredictions(matches) {
-            return matches.map(m => ({
+        async function fetchTeams() {
+            try {
+                const response = await fetch(`${API_BASE}/get/teams`);
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                const data = await response.json();
+                // Build a map of teamId -> { name, flag? }
+                const teamMap = {};
+                (data.teams || []).forEach(t => {
+                    teamMap[t.id] = {
+                        name: t.name,
+                        flag: t.flag || ''
+                    };
+                });
+                return teamMap;
+            } catch (error) {
+                console.error('Error fetching teams:', error);
+                return null;
+            }
+        }
+
+        // ================================================================
+        //  TRANSFORM API DATA TO OUR MATCH FORMAT
+        // ================================================================
+        function transformMatches(apiMatches, teamMap) {
+            return apiMatches.map(m => {
+                const homeTeam = teamMap[m.homeTeamId] ? teamMap[m.homeTeamId].name : `Team ${m.homeTeamId}`;
+                const awayTeam = teamMap[m.awayTeamId] ? teamMap[m.awayTeamId].name : `Team ${m.awayTeamId}`;
+                // Determine status
+                let status = 'scheduled';
+                if (m.status === 'finished' || m.status === 'completed' || m.status === 'FT') status = 'finished';
+                else if (m.status === 'live' || m.status === 'inprogress' || m.status === 'LIVE') status = 'live';
+                else status = 'scheduled';
+
+                // Score
+                let homeScore = null,
+                    awayScore = null;
+                if (m.homeTeamGoals !== undefined && m.homeTeamGoals !== null) {
+                    homeScore = m.homeTeamGoals;
+                    awayScore = m.awayTeamGoals;
+                }
+
+                // Time
+                let time = '--:--';
+                if (m.time) {
+                    time = m.time;
+                } else if (m.startTime) {
+                    const d = new Date(m.startTime);
+                    time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                }
+
+                const matchObj = {
+                    id: m.id,
+                    league: 'World Cup', // all matches are World Cup
+                    group: m.group || 'Unknown',
+                    home: homeTeam,
+                    away: awayTeam,
+                    homeScore,
+                    awayScore,
+                    status,
+                    time,
+                    // store raw data for possible future use
+                    raw: m,
+                };
+
+                // Generate a prediction for this match
+                const pred = generatePrediction(matchObj);
+                matchObj.predType = pred.type;
+                matchObj.predOutcome = pred.outcome;
+                matchObj.confidence = pred.confidence;
+
+                return matchObj;
+            });
+        }
+
+        // ================================================================
+        //  LOAD DATA & RENDER
+        // ================================================================
+        async function loadData() {
+            // Show loaders
+            document.getElementById('matchesLoader').style.display = 'block';
+            document.getElementById('predLoader').style.display = 'block';
+
+            // Fetch teams first (to map names)
+            const teamMap = await fetchTeams();
+            const apiMatches = await fetchMatches();
+
+            if (apiMatches && teamMap) {
+                allMatches = transformMatches(apiMatches, teamMap);
+            } else {
+                // Fallback to simulated data if API fails
+                console.warn('API failed – using simulated data');
+                allMatches = generateSimulatedMatches(24);
+            }
+
+            // Generate predictions for all matches
+            predictions = allMatches.map(m => ({
                 matchId: m.id,
                 home: m.home,
                 away: m.away,
                 league: m.league,
+                group: m.group,
                 type: m.predType,
                 outcome: m.predOutcome,
                 confidence: m.confidence,
                 status: m.status,
                 score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-'
             }));
+
+            // Populate group filter
+            populateGroupFilter();
+
+            // Render everything
+            renderMatches();
+            renderPredictions();
+            renderLeaderboard();
+            renderAdmin();
+            renderPlans();
+            updateStats();
+
+            // Hide loaders
+            document.getElementById('matchesLoader').style.display = 'none';
+            document.getElementById('predLoader').style.display = 'none';
+
+            // Start auto-refresh every 15 seconds (only if we have real data)
+            if (apiMatches && teamMap) {
+                setInterval(refreshData, 15000);
+            }
         }
 
-        // Generate leaderboard
-        function generateLeaderboard() {
-            const names = ['John Doe', 'Jane Smith', 'Alex Johnson', 'Maria Garcia', 'David Lee', 'Sarah Kim', 'Michael Chen',
-                'Emma Watson', 'Chris Evans', 'Olivia Brown'
+        // Simulated fallback matches (same as before)
+        function generateSimulatedMatches(count = 24) {
+            const LEAGUES = ['World Cup', 'World Cup', 'World Cup']; // all World Cup
+            const TEAMS = [
+                ['Brazil', 'Argentina'],
+                ['France', 'England'],
+                ['Germany', 'Spain'],
+                ['Italy', 'Portugal'],
+                ['Senegal', 'Nigeria'],
+                ['USA', 'Mexico'],
+                ['South Korea', 'Japan'],
+                ['Australia', 'New Zealand'],
+                ['Netherlands', 'Belgium'],
+                ['Croatia', 'Denmark'],
+                ['Uruguay', 'Colombia'],
+                ['Ecuador', 'Peru'],
             ];
-            return names.map((name, i) => ({
-                rank: i + 1,
-                name,
-                points: getRandomInt(500, 1500),
-                correct: getRandomInt(40, 90)
-            })).sort((a, b) => b.points - a.points).map((u, idx) => ({ ...u, rank: idx + 1 }));
+            const GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const matches = [];
+            for (let i = 0; i < count; i++) {
+                const teamPair = getRandom(TEAMS);
+                const statusRand = Math.random();
+                let status;
+                if (statusRand < 0.3) status = 'live';
+                else if (statusRand < 0.6) status = 'finished';
+                else status = 'scheduled';
+                const isLive = status === 'live';
+                const isFinished = status === 'finished';
+                let homeScore = null,
+                    awayScore = null;
+                if (isFinished) {
+                    homeScore = getRandomInt(0, 4);
+                    awayScore = getRandomInt(0, 4);
+                } else if (isLive) {
+                    homeScore = getRandomInt(0, 3);
+                    awayScore = getRandomInt(0, 3);
+                }
+                const time = isLive ? `${getRandomInt(20, 89)}'` :
+                    isFinished ? 'FT' :
+                    `${String(getRandomInt(12, 22)).padStart(2, '0')}:${String(getRandomInt(0, 59)).padStart(2, '0')}`;
+                const pred = {
+                    type: getRandom(['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG']),
+                    outcome: getRandom(['Home', 'Away', 'Draw', 'Over 2.5', 'Under 2.5', 'BTTS Yes', 'BTTS No', '1-0',
+                        '2-1'
+                    ]),
+                    confidence: getRandomInt(60, 98)
+                };
+                matches.push({
+                    id: i + 1,
+                    league: 'World Cup',
+                    group: getRandom(GROUPS),
+                    home: teamPair[0],
+                    away: teamPair[1],
+                    homeScore,
+                    awayScore,
+                    status,
+                    time,
+                    predType: pred.type,
+                    predOutcome: pred.outcome,
+                    confidence: pred.confidence,
+                });
+            }
+            return matches;
         }
 
         // ================================================================
         //  RENDER FUNCTIONS
         // ================================================================
 
-        // Render matches grid with filters
+        function populateGroupFilter() {
+            const select = document.getElementById('groupFilter');
+            const groups = [...new Set(allMatches.map(m => m.group))].filter(Boolean).sort();
+            select.innerHTML = `<option value="all">All Groups</option>` +
+                groups.map(g => `<option value="${g}">Group ${g}</option>`).join('');
+        }
+
         function renderMatches() {
             const grid = document.getElementById('matchesGrid');
-            const leagueFilter = document.getElementById('leagueFilter').value;
+            const groupFilter = document.getElementById('groupFilter').value;
             const statusFilter = document.getElementById('statusFilter').value;
 
-            let filtered = matches;
-            if (leagueFilter !== 'all') filtered = filtered.filter(m => m.league === leagueFilter);
+            let filtered = allMatches;
+            if (groupFilter !== 'all') filtered = filtered.filter(m => m.group === groupFilter);
             if (statusFilter !== 'all') filtered = filtered.filter(m => m.status === statusFilter);
 
             if (filtered.length === 0) {
@@ -1337,7 +1501,7 @@
             grid.innerHTML = filtered.map(m => `
                     <div class="match-card">
                         <div class="league">
-                            ${m.league}
+                            ${m.league} · Group ${m.group}
                             <span class="badge">${m.status}</span>
                         </div>
                         <div class="teams">
@@ -1347,8 +1511,8 @@
                         </div>
                         <div class="meta">
                             <span class="time"><i class="far fa-clock"></i> ${m.time}</span>
-                            <span class="status ${m.status === 'LIVE' ? 'status-live' : m.status === 'Finished' ? 'status-finished' : 'status-scheduled'}">
-                                ${m.status === 'LIVE' ? '● LIVE' : m.status}
+                            <span class="status ${m.status === 'live' ? 'status-live' : m.status === 'finished' ? 'status-finished' : 'status-scheduled'}">
+                                ${m.status === 'live' ? '● LIVE' : m.status}
                             </span>
                             ${m.homeScore !== null && m.awayScore !== null ? `<span><strong>${m.homeScore}</strong> : <strong>${m.awayScore}</strong></span>` : ''}
                         </div>
@@ -1366,33 +1530,43 @@
                 `).join('');
         }
 
-        // Render predictions table
         function renderPredictions() {
             const tbody = document.getElementById('predTableBody');
-            const preds = predictions.slice(0, 15); // show recent
+            const preds = predictions.slice(0, 15);
             if (preds.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No predictions available.</td></tr>`;
+                tbody.innerHTML =
+                `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No predictions available.</td></tr>`;
                 return;
             }
             tbody.innerHTML = preds.map(p => `
                     <tr>
                         <td><strong>${p.home}</strong> vs <strong>${p.away}</strong></td>
-                        <td>${p.league}</td>
+                        <td>Group ${p.group}</td>
                         <td>${p.type}</td>
                         <td>${p.outcome}</td>
                         <td>
                             <span class="conf-bar"><span style="width:${p.confidence}%;"></span></span>
                             ${p.confidence}%
                         </td>
-                        <td><span class="status-badge ${p.status === 'LIVE' ? 'status-live' : p.status === 'Finished' ? 'status-finished' : 'status-scheduled'}">${p.status}</span></td>
+                        <td><span class="status-badge ${p.status === 'live' ? 'status-live' : p.status === 'finished' ? 'status-finished' : 'status-scheduled'}">${p.status}</span></td>
                     </tr>
                 `).join('');
         }
 
-        // Render leaderboard
         function renderLeaderboard() {
+            // Generate random leaderboard (since we don't have real user data)
+            const names = ['John Doe', 'Jane Smith', 'Alex Johnson', 'Maria Garcia', 'David Lee', 'Sarah Kim', 'Michael Chen',
+                'Emma Watson', 'Chris Evans', 'Olivia Brown'
+            ];
+            const users = names.map((name, i) => ({
+                rank: i + 1,
+                name,
+                points: getRandomInt(500, 1500),
+                correct: getRandomInt(40, 90)
+            })).sort((a, b) => b.points - a.points).map((u, idx) => ({ ...u, rank: idx + 1 }));
+
             const container = document.getElementById('leaderboardContainer');
-            container.innerHTML = leaderboardUsers.map(u => `
+            container.innerHTML = users.map(u => `
                     <div class="lb-item">
                         <div class="lb-rank ${u.rank === 1 ? 'gold' : u.rank === 2 ? 'silver' : u.rank === 3 ? 'bronze' : ''}">#${u.rank}</div>
                         <div class="lb-name">${u.name}</div>
@@ -1402,7 +1576,6 @@
                 `).join('');
         }
 
-        // Render admin panels
         function renderAdmin() {
             // Users
             const userList = document.getElementById('adminUserList');
@@ -1414,18 +1587,17 @@
                     </li>
                 `).join('');
 
-            // Matches (just last 5)
+            // Matches (last 5)
             const matchList = document.getElementById('adminMatchList');
-            const recent = matches.slice(0, 5);
+            const recent = allMatches.slice(0, 5);
             matchList.innerHTML = recent.map(m => `
                     <li>
-                        <span>${m.home} vs ${m.away} (${m.league})</span>
+                        <span>${m.home} vs ${m.away} (Group ${m.group})</span>
                         <button class="btn btn-outline btn-sm small-btn">Edit</button>
                     </li>
                 `).join('');
         }
 
-        // Render subscription plans
         function renderPlans() {
             const plans = [{
                 name: 'Free',
@@ -1466,77 +1638,54 @@
                 `).join('');
         }
 
-        // ================================================================
-        //  UPDATE MATCHES (simulate live updates)
-        // ================================================================
-        function updateMatches() {
-            // For each match, possibly change status and scores
-            matches.forEach(m => {
-                if (m.status === 'Scheduled') {
-                    // Small chance to become LIVE
-                    if (Math.random() < 0.05) {
-                        m.status = 'LIVE';
-                        m.time = `${getRandomInt(1, 45)}'`;
-                        m.homeScore = getRandomInt(0, 2);
-                        m.awayScore = getRandomInt(0, 2);
-                    }
-                } else if (m.status === 'LIVE') {
-                    // Update score randomly
-                    if (Math.random() < 0.3) {
-                        if (Math.random() < 0.6) m.homeScore += 1;
-                        else m.awayScore += 1;
-                    }
-                    // increase time
-                    let t = parseInt(m.time);
-                    if (!isNaN(t) && t < 90) {
-                        t += getRandomInt(1, 5);
-                        if (t >= 90) {
-                            t = 90;
-                            m.status = 'Finished';
-                            m.time = 'FT';
-                        } else {
-                            m.time = `${t}'`;
-                        }
-                    }
-                    // chance to finish
-                    if (Math.random() < 0.02) {
-                        m.status = 'Finished';
-                        m.time = 'FT';
-                    }
-                }
-                // confidence slight variation
-                m.confidence = Math.min(98, Math.max(60, m.confidence + getRandomInt(-3, 3)));
-            });
-
-            // Regenerate predictions from updated matches
-            predictions = generatePredictions(matches);
-
-            // Re-render affected views
-            renderMatches();
-            renderPredictions();
-            // update stats
-            updateStats();
-        }
-
-        // ================================================================
-        //  UPDATE STATS
-        // ================================================================
         function updateStats() {
-            const total = matches.length;
-            const live = matches.filter(m => m.status === 'LIVE').length;
-            const finished = matches.filter(m => m.status === 'Finished').length;
-            const avgConf = (matches.reduce((s, m) => s + m.confidence, 0) / total).toFixed(1);
+            const total = allMatches.length;
+            const live = allMatches.filter(m => m.status === 'live').length;
+            const finished = allMatches.filter(m => m.status === 'finished').length;
+            const avgConf = total > 0 ? (allMatches.reduce((s, m) => s + m.confidence, 0) / total).toFixed(1) : '0';
             document.getElementById('statAccuracy').textContent = `${avgConf}%`;
-            document.getElementById('statMatches').textContent = `${total}+`;
-            const leagues = new Set(matches.map(m => m.league));
-            document.getElementById('statLeagues').textContent = leagues.size;
+            document.getElementById('statMatches').textContent = total;
+            const groups = new Set(allMatches.map(m => m.group));
+            document.getElementById('statLeagues').textContent = groups.size || '1';
             document.getElementById('adminAccuracy').textContent = `${avgConf}%`;
-            // update confidence badge
             document.getElementById('confidenceValue').textContent = `${avgConf}%`;
         }
 
         // ================================================================
-        //  AUTH MODAL
+        //  REFRESH DATA (poll API)
+        // ================================================================
+        async function refreshData() {
+            try {
+                const teamMap = await fetchTeams();
+                const apiMatches = await fetchMatches();
+                if (apiMatches && teamMap) {
+                    allMatches = transformMatches(apiMatches, teamMap);
+                    predictions = allMatches.map(m => ({
+                        matchId: m.id,
+                        home: m.home,
+                        away: m.away,
+                        league: m.league,
+                        group: m.group,
+                        type: m.predType,
+                        outcome: m.predOutcome,
+                        confidence: m.confidence,
+                        status: m.status,
+                        score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-'
+                    }));
+                    // Update group filter if groups changed
+                    populateGroupFilter();
+                    renderMatches();
+                    renderPredictions();
+                    renderAdmin();
+                    updateStats();
+                }
+            } catch (e) {
+                console.error('Refresh failed, keeping old data.', e);
+            }
+        }
+
+        // ================================================================
+        //  AUTH MODAL (same as before)
         // ================================================================
         const modal = document.getElementById('authModal');
         const loginBtn = document.getElementById('loginBtn');
@@ -1589,11 +1738,9 @@
                     `🎉 Account created for ${email} (simulated)`);
                 closeModalFn();
                 isLoggedIn = true;
-                // Update UI
                 document.querySelector('.nav-actions .btn-outline').textContent = 'My Account';
                 document.querySelector('.nav-actions .btn-primary').textContent = 'Dashboard';
                 document.getElementById('heroCta').textContent = '🏆 My Predictions';
-                // Reflect in admin? not needed.
             } else {
                 alert('Please enter a valid email and password (min 6 chars).');
             }
@@ -1613,77 +1760,48 @@
         };
 
         function switchTab(tabId) {
-            // hide all
             Object.values(tabContents).forEach(el => el.classList.remove('active'));
-            // show selected
             if (tabContents[tabId]) tabContents[tabId].classList.add('active');
-            // update nav
             tabs.forEach(a => a.classList.remove('active'));
             document.querySelector(`.nav-links a[data-tab="${tabId}"]`)?.classList.add('active');
-            // close mobile nav
             document.getElementById('navLinks').classList.remove('open');
         }
 
         tabs.forEach(a => {
             a.addEventListener('click', (e) => {
                 e.preventDefault();
-                const tab = a.dataset.tab;
-                switchTab(tab);
+                switchTab(a.dataset.tab);
             });
         });
-
-        // Logo click -> dashboard
         document.getElementById('logoHome').addEventListener('click', () => switchTab('dashboard'));
-
-        // Hero CTA -> matches tab
         document.getElementById('heroCta').addEventListener('click', () => switchTab('matches'));
-
-        // Live scores button -> matches tab with live filter
         document.getElementById('liveScoresBtn').addEventListener('click', () => {
             switchTab('matches');
-            document.getElementById('statusFilter').value = 'LIVE';
+            document.getElementById('statusFilter').value = 'live';
             renderMatches();
         });
 
         // ================================================================
         //  FILTERS
         // ================================================================
-        function populateLeagueFilter() {
-            const select = document.getElementById('leagueFilter');
-            const leagues = [...new Set(matches.map(m => m.league))].sort();
-            select.innerHTML = `<option value="all">All Leagues</option>` +
-                leagues.map(l => `<option value="${l}">${l}</option>`).join('');
-        }
-
-        document.getElementById('leagueFilter').addEventListener('change', renderMatches);
+        document.getElementById('groupFilter').addEventListener('change', renderMatches);
         document.getElementById('statusFilter').addEventListener('change', renderMatches);
 
         // ================================================================
         //  REFRESH BUTTONS
         // ================================================================
-        document.getElementById('refreshMatchesBtn').addEventListener('click', () => {
-            // regenerate matches with new data
-            matches = generateMatches(24);
-            predictions = generatePredictions(matches);
-            populateLeagueFilter();
-            renderMatches();
-            renderPredictions();
-            renderLeaderboard();
-            renderAdmin();
-            updateStats();
-            // confidence
-            const avg = (matches.reduce((s, m) => s + m.confidence, 0) / matches.length).toFixed(0);
-            document.getElementById('confidenceValue').textContent = `${avg}%`;
+        document.getElementById('refreshMatchesBtn').addEventListener('click', async () => {
+            document.getElementById('matchesLoader').style.display = 'block';
+            await refreshData();
+            document.getElementById('matchesLoader').style.display = 'none';
         });
-
         document.getElementById('refreshConfidenceBtn').addEventListener('click', () => {
-            const avg = (matches.reduce((s, m) => s + m.confidence, 0) / matches.length).toFixed(0);
+            const avg = allMatches.length > 0 ? (allMatches.reduce((s, m) => s + m.confidence, 0) / allMatches.length)
+                .toFixed(0) : '0';
             document.getElementById('confidenceValue').textContent = `${avg}%`;
-            renderMatches(); // re-render to update confidence tags
+            renderMatches();
         });
-
         document.getElementById('refreshPredTable').addEventListener('click', () => {
-            predictions = generatePredictions(matches);
             renderPredictions();
         });
 
@@ -1714,27 +1832,7 @@
         // ================================================================
         //  INIT
         // ================================================================
-        function init() {
-            matches = generateMatches(24);
-            predictions = generatePredictions(matches);
-            leaderboardUsers = generateLeaderboard();
-            populateLeagueFilter();
-            renderMatches();
-            renderPredictions();
-            renderLeaderboard();
-            renderAdmin();
-            renderPlans();
-            updateStats();
-            // start auto-update every 8 seconds
-            setInterval(updateMatches, 8000);
-            // also update leaderboard occasionally (just for demo)
-            setInterval(() => {
-                leaderboardUsers = generateLeaderboard();
-                renderLeaderboard();
-            }, 30000);
-        }
-
-        init();
+        loadData();
     </script>
 </body>
 </html>
