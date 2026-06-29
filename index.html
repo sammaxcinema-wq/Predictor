@@ -133,6 +133,13 @@
             background: #27ae60;
             transform: translateY(-2px);
         }
+        .btn-danger {
+            background: var(--red);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
 
         /* ----- HEADER / NAV ----- */
         .header {
@@ -156,6 +163,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
         .logo i {
             color: var(--accent);
@@ -179,6 +187,7 @@
             transition: var(--transition);
             font-size: 0.95rem;
             position: relative;
+            cursor: pointer;
         }
         .nav-links a:hover,
         .nav-links a.active {
@@ -246,6 +255,7 @@
             margin-top: 48px;
             padding-top: 32px;
             border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
         }
         .hero-stats .stat {
             text-align: center;
@@ -278,6 +288,49 @@
             gap: 16px;
             margin-bottom: 24px;
         }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .filters select,
+        .filters input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .filters select:focus,
+        .filters input:focus {
+            border-color: var(--accent);
+        }
+        .filters select option {
+            background: var(--bg-secondary);
+        }
+
+        /* ----- TABS CONTENT ----- */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* ----- MATCH CARDS (GRID) ----- */
         .matches-grid {
@@ -306,6 +359,16 @@
             color: var(--text-muted);
             font-weight: 600;
             margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .match-card .league .badge {
+            background: var(--bg-secondary);
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
         }
         .match-card .teams {
             display: flex;
@@ -396,7 +459,135 @@
             font-weight: 400;
         }
 
-        /* ----- PREDICTION ENGINE DEMO ----- */
+        /* ----- PREDICTION TABLE ----- */
+        .pred-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .pred-table th {
+            background: var(--bg-secondary);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pred-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .pred-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+        .pred-table .conf-bar {
+            display: inline-block;
+            width: 80px;
+            height: 6px;
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            overflow: hidden;
+            vertical-align: middle;
+        }
+        .pred-table .conf-bar span {
+            display: block;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        .pred-table .status-badge {
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* ----- LEADERBOARD ----- */
+        .leaderboard {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+        .leaderboard .lb-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leaderboard .lb-item:last-child {
+            border-bottom: none;
+        }
+        .leaderboard .lb-rank {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            min-width: 36px;
+        }
+        .leaderboard .lb-rank.gold {
+            color: var(--yellow);
+        }
+        .leaderboard .lb-rank.silver {
+            color: #c0c0c0;
+        }
+        .leaderboard .lb-rank.bronze {
+            color: #cd7f32;
+        }
+        .leaderboard .lb-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .leaderboard .lb-points {
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        /* ----- ADMIN PANEL ----- */
+        .admin-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .admin-card {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+        .admin-card h3 {
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .admin-card .admin-list {
+            list-style: none;
+        }
+        .admin-card .admin-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-card .admin-list li:last-child {
+            border-bottom: none;
+        }
+        .admin-card .admin-list .small-btn {
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* ----- PREDICTION DEMO BANNER ----- */
         .prediction-demo {
             background: var(--bg-secondary);
             border-radius: var(--radius);
@@ -705,6 +896,13 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            .admin-panel {
+                grid-template-columns: 1fr;
+            }
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
         @media (min-width: 769px) {
             .mobile-toggle {
@@ -740,6 +938,9 @@
             align-items: center;
             justify-content: center;
         }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -747,16 +948,16 @@
     <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="container">
-            <div class="logo">
+            <div class="logo" id="logoHome">
                 <i class="fas fa-futbol"></i>
                 <span>FootyAI</span>
             </div>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#" class="active">Dashboard</a></li>
-                <li><a href="#">Matches</a></li>
-                <li><a href="#">Predictions</a></li>
-                <li><a href="#">Leaderboard</a></li>
-                <li><a href="#">Admin</a></li>
+                <li><a class="active" data-tab="dashboard">Dashboard</a></li>
+                <li><a data-tab="matches">Matches</a></li>
+                <li><a data-tab="predictions">Predictions</a></li>
+                <li><a data-tab="leaderboard">Leaderboard</a></li>
+                <li><a data-tab="admin">Admin</a></li>
             </ul>
             <div class="nav-actions">
                 <button class="btn btn-outline btn-sm" id="loginBtn">Log In</button>
@@ -768,8 +969,8 @@
         </div>
     </header>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero">
+    <!-- ===== HERO (Dashboard Tab) ===== -->
+    <section class="hero tab-content active" id="tab-dashboard">
         <div class="container">
             <h1>
                 AI-Powered Football<br />
@@ -781,41 +982,53 @@
             </p>
             <div class="hero-actions">
                 <button class="btn btn-primary" id="heroCta">
-                    <i class="fas fa-robot"></i> Try AI Predictor
+                    <i class="fas fa-robot"></i> Explore Matches
                 </button>
-                <button class="btn btn-outline">
+                <button class="btn btn-outline" id="liveScoresBtn">
                     <i class="fas fa-play-circle"></i> Live Scores
                 </button>
             </div>
-            <div class="hero-stats">
+            <div class="hero-stats" id="dashboardStats">
                 <div class="stat">
-                    <div class="number">87%</div>
+                    <div class="number" id="statAccuracy">87%</div>
                     <div class="label">Accuracy Rate</div>
                 </div>
                 <div class="stat">
-                    <div class="number">1,240+</div>
+                    <div class="number" id="statMatches">1,240+</div>
                     <div class="label">Matches Predicted</div>
                 </div>
                 <div class="stat">
-                    <div class="number">32</div>
+                    <div class="number" id="statLeagues">32</div>
                     <div class="label">Leagues Covered</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ===== LIVE MATCHES ===== -->
-    <section class="container">
+    <!-- ===== MATCHES TAB ===== -->
+    <section class="container tab-content" id="tab-matches">
         <div class="section-header">
             <div>
                 <h2 class="section-title"><i class="fas fa-bolt" style="color:var(--accent);margin-right:8px;"></i> Live Matches</h2>
                 <p class="section-sub">Real‑time predictions for today's fixtures</p>
             </div>
-            <span class="badge-accent"><i class="fas fa-sync-alt fa-fw"></i> Auto‑refresh</span>
+            <div class="filters">
+                <select id="leagueFilter">
+                    <option value="all">All Leagues</option>
+                    <!-- populated by JS -->
+                </select>
+                <select id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="LIVE">Live</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Finished">Finished</option>
+                </select>
+                <button class="btn btn-primary btn-sm" id="refreshMatchesBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </div>
         </div>
 
         <div class="matches-grid" id="matchesGrid">
-            <!-- Match cards will be injected by JS -->
+            <!-- match cards injected by JS -->
         </div>
 
         <!-- AI Prediction Demo Banner -->
@@ -830,14 +1043,91 @@
                 <span class="value" id="confidenceValue">92%</span>
                 <span style="color:var(--text-muted);font-size:0.8rem;">on today's matches</span>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="refreshPredictions()">
+            <button class="btn btn-primary btn-sm" id="refreshConfidenceBtn">
                 <i class="fas fa-sync-alt"></i> Refresh
             </button>
         </div>
     </section>
 
-    <!-- ===== SUBSCRIPTION PLANS ===== -->
-    <section class="container">
+    <!-- ===== PREDICTIONS TAB ===== -->
+    <section class="container tab-content" id="tab-predictions">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title"><i class="fas fa-chart-line" style="color:var(--accent);margin-right:8px;"></i> AI Predictions</h2>
+                <p class="section-sub">Detailed forecasts for upcoming and live matches</p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="refreshPredTable"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="pred-table" id="predTable">
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>League</th>
+                        <th>Prediction Type</th>
+                        <th>Outcome</th>
+                        <th>Confidence</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="predTableBody">
+                    <!-- rows injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== LEADERBOARD TAB ===== -->
+    <section class="container tab-content" id="tab-leaderboard">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title"><i class="fas fa-trophy" style="color:var(--yellow);margin-right:8px;"></i> Leaderboard</h2>
+                <p class="section-sub">Top predictors this season</p>
+            </div>
+        </div>
+        <div class="leaderboard" id="leaderboardContainer">
+            <!-- injected by JS -->
+        </div>
+    </section>
+
+    <!-- ===== ADMIN TAB ===== -->
+    <section class="container tab-content" id="tab-admin">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title"><i class="fas fa-user-shield" style="color:var(--accent);margin-right:8px;"></i> Admin Panel</h2>
+                <p class="section-sub">Manage users, matches, and system settings</p>
+            </div>
+        </div>
+        <div class="admin-panel">
+            <div class="admin-card">
+                <h3><i class="fas fa-users"></i> Users</h3>
+                <ul class="admin-list" id="adminUserList">
+                    <!-- injected -->
+                </ul>
+            </div>
+            <div class="admin-card">
+                <h3><i class="fas fa-futbol"></i> Match Management</h3>
+                <ul class="admin-list" id="adminMatchList">
+                    <!-- injected -->
+                </ul>
+            </div>
+            <div class="admin-card">
+                <h3><i class="fas fa-robot"></i> AI Model</h3>
+                <p style="color:var(--text-secondary);">Current accuracy: <strong id="adminAccuracy">87%</strong></p>
+                <button class="btn btn-primary btn-sm" id="retrainBtn"><i class="fas fa-sync-alt"></i> Retrain Model</button>
+                <p style="color:var(--text-muted);font-size:0.8rem;margin-top:8px;">Last trained: Today 10:32 AM</p>
+            </div>
+            <div class="admin-card">
+                <h3><i class="fas fa-cog"></i> System</h3>
+                <p>Uptime: <span style="color:var(--green);">99.9%</span></p>
+                <p>Version: 2.4.1</p>
+                <button class="btn btn-danger btn-sm" id="clearCacheBtn"><i class="fas fa-trash"></i> Clear Cache</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SUBSCRIPTION PLANS (visible on all tabs) ===== -->
+    <section class="container" style="margin-top:20px;">
         <div class="text-center" style="margin-bottom:8px;">
             <h2 class="section-title">Choose Your Plan</h2>
             <p class="section-sub" style="max-width:500px;margin:0 auto 8px;">
@@ -897,10 +1187,15 @@
 
     <script>
         // ================================================================
-        //  DATA
+        //  DATA & STATE
         // ================================================================
-        const leagues = ['Premier League', 'La Liga', 'Bundesliga', 'Serie A', 'Ligue 1'];
-        const teams = [
+        const LEAGUES = [
+            'Premier League', 'La Liga', 'Bundesliga', 'Serie A', 'Ligue 1',
+            'Champions League', 'Europa League', 'World Cup', 'Copa América',
+            'African Cup of Nations', 'MLS', 'Eredivisie', 'Primeira Liga'
+        ];
+
+        const TEAMS = [
             ['Liverpool', 'Arsenal'],
             ['Real Madrid', 'Barcelona'],
             ['Bayern Munich', 'Dortmund'],
@@ -910,55 +1205,141 @@
             ['Atletico Madrid', 'Sevilla'],
             ['Napoli', 'Roma'],
             ['Tottenham', 'Man United'],
-            ['Valencia', 'Villarreal']
+            ['Valencia', 'Villarreal'],
+            ['Ajax', 'PSV'],
+            ['Benfica', 'Porto'],
+            ['Brazil', 'Argentina'],
+            ['France', 'England'],
+            ['Germany', 'Spain'],
+            ['Italy', 'Portugal'],
+            ['Senegal', 'Nigeria'],
+            ['USA', 'Mexico'],
+            ['South Korea', 'Japan'],
+            ['Australia', 'New Zealand']
         ];
-        const statuses = ['LIVE', 'Scheduled', 'Finished'];
-        const predTypes = ['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG'];
 
+        const PRED_TYPES = ['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG'];
+        const PRED_OUTCOMES = ['Home', 'Away', 'Draw', 'Over 2.5', 'Under 2.5', 'BTTS Yes', 'BTTS No', '1-0', '2-1', '1-1', '0-0',
+            '3-1'
+        ];
+
+        let matches = [];
+        let predictions = [];
+        let leaderboardUsers = [];
+        let isLoggedIn = false;
+
+        // ================================================================
+        //  HELPERS
+        // ================================================================
         function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
         function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-        function generateMatches(count = 8) {
-            const matches = [];
-            for (let i = 0; i < count; i++) {
-                const league = getRandom(leagues);
-                const teamPair = getRandom(teams);
-                const status = getRandom(statuses);
-                const isLive = status === 'LIVE';
-                const isFinished = status === 'Finished';
-                const homeScore = isFinished ? getRandomInt(0, 4) : (isLive ? getRandomInt(0, 3) : null);
-                const awayScore = isFinished ? getRandomInt(0, 4) : (isLive ? getRandomInt(0, 3) : null);
-                const pred = {
-                    type: getRandom(predTypes),
-                    outcome: ['Home', 'Away', 'Draw', 'Over 2.5', 'Under 2.5', 'BTTS Yes', 'BTTS No', '1-0', '2-1'][getRandomInt(
-                        0, 8)],
-                    confidence: (60 + Math.random() * 35).toFixed(0)
-                };
-                matches.push({
-                    id: i + 1,
-                    league,
-                    home: teamPair[0],
-                    away: teamPair[1],
-                    homeScore,
-                    awayScore,
-                    status,
-                    time: isLive ? `${getRandomInt(20, 89)}'` : `${String(getRandomInt(12, 22)).padStart(2, '0')}:${String(getRandomInt(0, 59)).padStart(2, '0')}`,
-                    pred,
-                });
+        function getRandomFloat(min, max) { return +(Math.random() * (max - min) + min).toFixed(1); }
+
+        // Generate a match
+        function generateMatch(id) {
+            const league = getRandom(LEAGUES);
+            const teamPair = getRandom(TEAMS);
+            const statusRand = Math.random();
+            let status;
+            if (statusRand < 0.3) status = 'LIVE';
+            else if (statusRand < 0.6) status = 'Finished';
+            else status = 'Scheduled';
+            const isLive = status === 'LIVE';
+            const isFinished = status === 'Finished';
+            let homeScore = null,
+                awayScore = null;
+            if (isFinished) {
+                homeScore = getRandomInt(0, 4);
+                awayScore = getRandomInt(0, 4);
+            } else if (isLive) {
+                homeScore = getRandomInt(0, 3);
+                awayScore = getRandomInt(0, 3);
             }
-            return matches;
+            const time = isLive ? `${getRandomInt(20, 89)}'` :
+                isFinished ? 'FT' :
+                `${String(getRandomInt(12, 22)).padStart(2, '0')}:${String(getRandomInt(0, 59)).padStart(2, '0')}`;
+            const predType = getRandom(PRED_TYPES);
+            const predOutcome = getRandom(PRED_OUTCOMES);
+            const confidence = getRandomInt(60, 98);
+            return {
+                id,
+                league,
+                home: teamPair[0],
+                away: teamPair[1],
+                homeScore,
+                awayScore,
+                status,
+                time,
+                predType,
+                predOutcome,
+                confidence
+            };
+        }
+
+        function generateMatches(count = 24) {
+            const arr = [];
+            for (let i = 0; i < count; i++) {
+                arr.push(generateMatch(i + 1));
+            }
+            return arr;
+        }
+
+        // Generate predictions from matches
+        function generatePredictions(matches) {
+            return matches.map(m => ({
+                matchId: m.id,
+                home: m.home,
+                away: m.away,
+                league: m.league,
+                type: m.predType,
+                outcome: m.predOutcome,
+                confidence: m.confidence,
+                status: m.status,
+                score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-'
+            }));
+        }
+
+        // Generate leaderboard
+        function generateLeaderboard() {
+            const names = ['John Doe', 'Jane Smith', 'Alex Johnson', 'Maria Garcia', 'David Lee', 'Sarah Kim', 'Michael Chen',
+                'Emma Watson', 'Chris Evans', 'Olivia Brown'
+            ];
+            return names.map((name, i) => ({
+                rank: i + 1,
+                name,
+                points: getRandomInt(500, 1500),
+                correct: getRandomInt(40, 90)
+            })).sort((a, b) => b.points - a.points).map((u, idx) => ({ ...u, rank: idx + 1 }));
         }
 
         // ================================================================
-        //  RENDER MATCHES
+        //  RENDER FUNCTIONS
         // ================================================================
+
+        // Render matches grid with filters
         function renderMatches() {
             const grid = document.getElementById('matchesGrid');
-            const matches = generateMatches(8);
-            grid.innerHTML = matches.map(m => `
+            const leagueFilter = document.getElementById('leagueFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = matches;
+            if (leagueFilter !== 'all') filtered = filtered.filter(m => m.league === leagueFilter);
+            if (statusFilter !== 'all') filtered = filtered.filter(m => m.status === statusFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML =
+                    `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">No matches found.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(m => `
                     <div class="match-card">
-                        <div class="league">${m.league}</div>
+                        <div class="league">
+                            ${m.league}
+                            <span class="badge">${m.status}</span>
+                        </div>
                         <div class="teams">
                             <span class="team"><i class="fas fa-shield-alt"></i> ${m.home}</span>
                             <span class="vs">vs</span>
@@ -973,11 +1354,11 @@
                         </div>
                         <div class="predictions">
                             <span class="pred-tag">
-                                <i class="fas fa-robot"></i> ${m.pred.type} 
-                                <span class="conf">→ ${m.pred.outcome}</span>
+                                <i class="fas fa-robot"></i> ${m.predType} 
+                                <span class="conf">→ ${m.predOutcome}</span>
                             </span>
                             <span class="pred-tag">
-                                <i class="fas fa-bullseye"></i> ${m.pred.confidence}% 
+                                <i class="fas fa-bullseye"></i> ${m.confidence}% 
                                 <span class="conf">conf.</span>
                             </span>
                         </div>
@@ -985,9 +1366,66 @@
                 `).join('');
         }
 
-        // ================================================================
-        //  RENDER PLANS
-        // ================================================================
+        // Render predictions table
+        function renderPredictions() {
+            const tbody = document.getElementById('predTableBody');
+            const preds = predictions.slice(0, 15); // show recent
+            if (preds.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No predictions available.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = preds.map(p => `
+                    <tr>
+                        <td><strong>${p.home}</strong> vs <strong>${p.away}</strong></td>
+                        <td>${p.league}</td>
+                        <td>${p.type}</td>
+                        <td>${p.outcome}</td>
+                        <td>
+                            <span class="conf-bar"><span style="width:${p.confidence}%;"></span></span>
+                            ${p.confidence}%
+                        </td>
+                        <td><span class="status-badge ${p.status === 'LIVE' ? 'status-live' : p.status === 'Finished' ? 'status-finished' : 'status-scheduled'}">${p.status}</span></td>
+                    </tr>
+                `).join('');
+        }
+
+        // Render leaderboard
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = leaderboardUsers.map(u => `
+                    <div class="lb-item">
+                        <div class="lb-rank ${u.rank === 1 ? 'gold' : u.rank === 2 ? 'silver' : u.rank === 3 ? 'bronze' : ''}">#${u.rank}</div>
+                        <div class="lb-name">${u.name}</div>
+                        <div class="lb-points">${u.points} pts</div>
+                        <div style="color:var(--text-muted);font-size:0.8rem;">✅ ${u.correct} correct</div>
+                    </div>
+                `).join('');
+        }
+
+        // Render admin panels
+        function renderAdmin() {
+            // Users
+            const userList = document.getElementById('adminUserList');
+            const sampleUsers = ['alice@footy.ai', 'bob@footy.ai', 'carol@footy.ai', 'dave@footy.ai', 'eve@footy.ai'];
+            userList.innerHTML = sampleUsers.map(email => `
+                    <li>
+                        <span>${email}</span>
+                        <button class="btn btn-danger btn-sm small-btn">Suspend</button>
+                    </li>
+                `).join('');
+
+            // Matches (just last 5)
+            const matchList = document.getElementById('adminMatchList');
+            const recent = matches.slice(0, 5);
+            matchList.innerHTML = recent.map(m => `
+                    <li>
+                        <span>${m.home} vs ${m.away} (${m.league})</span>
+                        <button class="btn btn-outline btn-sm small-btn">Edit</button>
+                    </li>
+                `).join('');
+        }
+
+        // Render subscription plans
         function renderPlans() {
             const plans = [{
                 name: 'Free',
@@ -1021,11 +1459,80 @@
                         <ul class="plan-features">
                             ${p.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('')}
                         </ul>
-                        <button class="btn ${p.popular ? 'btn-primary' : 'btn-outline'}">
+                        <button class="btn ${p.popular ? 'btn-primary' : 'btn-outline'}" onclick="selectPlan('${p.name}')">
                             ${p.popular ? 'Get Started' : 'Choose Plan'}
                         </button>
                     </div>
                 `).join('');
+        }
+
+        // ================================================================
+        //  UPDATE MATCHES (simulate live updates)
+        // ================================================================
+        function updateMatches() {
+            // For each match, possibly change status and scores
+            matches.forEach(m => {
+                if (m.status === 'Scheduled') {
+                    // Small chance to become LIVE
+                    if (Math.random() < 0.05) {
+                        m.status = 'LIVE';
+                        m.time = `${getRandomInt(1, 45)}'`;
+                        m.homeScore = getRandomInt(0, 2);
+                        m.awayScore = getRandomInt(0, 2);
+                    }
+                } else if (m.status === 'LIVE') {
+                    // Update score randomly
+                    if (Math.random() < 0.3) {
+                        if (Math.random() < 0.6) m.homeScore += 1;
+                        else m.awayScore += 1;
+                    }
+                    // increase time
+                    let t = parseInt(m.time);
+                    if (!isNaN(t) && t < 90) {
+                        t += getRandomInt(1, 5);
+                        if (t >= 90) {
+                            t = 90;
+                            m.status = 'Finished';
+                            m.time = 'FT';
+                        } else {
+                            m.time = `${t}'`;
+                        }
+                    }
+                    // chance to finish
+                    if (Math.random() < 0.02) {
+                        m.status = 'Finished';
+                        m.time = 'FT';
+                    }
+                }
+                // confidence slight variation
+                m.confidence = Math.min(98, Math.max(60, m.confidence + getRandomInt(-3, 3)));
+            });
+
+            // Regenerate predictions from updated matches
+            predictions = generatePredictions(matches);
+
+            // Re-render affected views
+            renderMatches();
+            renderPredictions();
+            // update stats
+            updateStats();
+        }
+
+        // ================================================================
+        //  UPDATE STATS
+        // ================================================================
+        function updateStats() {
+            const total = matches.length;
+            const live = matches.filter(m => m.status === 'LIVE').length;
+            const finished = matches.filter(m => m.status === 'Finished').length;
+            const avgConf = (matches.reduce((s, m) => s + m.confidence, 0) / total).toFixed(1);
+            document.getElementById('statAccuracy').textContent = `${avgConf}%`;
+            document.getElementById('statMatches').textContent = `${total}+`;
+            const leagues = new Set(matches.map(m => m.league));
+            document.getElementById('statLeagues').textContent = leagues.size;
+            document.getElementById('adminAccuracy').textContent = `${avgConf}%`;
+            // update confidence badge
+            document.getElementById('confidenceValue').textContent = `${avgConf}%`;
         }
 
         // ================================================================
@@ -1081,10 +1588,12 @@
                     `✅ Logged in as ${email}` :
                     `🎉 Account created for ${email} (simulated)`);
                 closeModalFn();
-                // Update UI to logged-in state (demo)
+                isLoggedIn = true;
+                // Update UI
                 document.querySelector('.nav-actions .btn-outline').textContent = 'My Account';
                 document.querySelector('.nav-actions .btn-primary').textContent = 'Dashboard';
                 document.getElementById('heroCta').textContent = '🏆 My Predictions';
+                // Reflect in admin? not needed.
             } else {
                 alert('Please enter a valid email and password (min 6 chars).');
             }
@@ -1092,18 +1601,108 @@
         document.getElementById('authForm').addEventListener('submit', handleAuth);
 
         // ================================================================
-        //  REFRESH PREDICTIONS (demo)
+        //  TAB SWITCHING
         // ================================================================
-        function refreshPredictions() {
-            const val = document.getElementById('confidenceValue');
-            const newConf = (75 + Math.random() * 20).toFixed(0);
-            val.textContent = newConf + '%';
-            renderMatches();
-            // subtle animation
-            val.style.transition = '0.2s';
-            val.style.color = '#7c5cfc';
-            setTimeout(() => val.style.color = '', 400);
+        const tabs = document.querySelectorAll('.nav-links a[data-tab]');
+        const tabContents = {
+            dashboard: document.getElementById('tab-dashboard'),
+            matches: document.getElementById('tab-matches'),
+            predictions: document.getElementById('tab-predictions'),
+            leaderboard: document.getElementById('tab-leaderboard'),
+            admin: document.getElementById('tab-admin')
+        };
+
+        function switchTab(tabId) {
+            // hide all
+            Object.values(tabContents).forEach(el => el.classList.remove('active'));
+            // show selected
+            if (tabContents[tabId]) tabContents[tabId].classList.add('active');
+            // update nav
+            tabs.forEach(a => a.classList.remove('active'));
+            document.querySelector(`.nav-links a[data-tab="${tabId}"]`)?.classList.add('active');
+            // close mobile nav
+            document.getElementById('navLinks').classList.remove('open');
         }
+
+        tabs.forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tab = a.dataset.tab;
+                switchTab(tab);
+            });
+        });
+
+        // Logo click -> dashboard
+        document.getElementById('logoHome').addEventListener('click', () => switchTab('dashboard'));
+
+        // Hero CTA -> matches tab
+        document.getElementById('heroCta').addEventListener('click', () => switchTab('matches'));
+
+        // Live scores button -> matches tab with live filter
+        document.getElementById('liveScoresBtn').addEventListener('click', () => {
+            switchTab('matches');
+            document.getElementById('statusFilter').value = 'LIVE';
+            renderMatches();
+        });
+
+        // ================================================================
+        //  FILTERS
+        // ================================================================
+        function populateLeagueFilter() {
+            const select = document.getElementById('leagueFilter');
+            const leagues = [...new Set(matches.map(m => m.league))].sort();
+            select.innerHTML = `<option value="all">All Leagues</option>` +
+                leagues.map(l => `<option value="${l}">${l}</option>`).join('');
+        }
+
+        document.getElementById('leagueFilter').addEventListener('change', renderMatches);
+        document.getElementById('statusFilter').addEventListener('change', renderMatches);
+
+        // ================================================================
+        //  REFRESH BUTTONS
+        // ================================================================
+        document.getElementById('refreshMatchesBtn').addEventListener('click', () => {
+            // regenerate matches with new data
+            matches = generateMatches(24);
+            predictions = generatePredictions(matches);
+            populateLeagueFilter();
+            renderMatches();
+            renderPredictions();
+            renderLeaderboard();
+            renderAdmin();
+            updateStats();
+            // confidence
+            const avg = (matches.reduce((s, m) => s + m.confidence, 0) / matches.length).toFixed(0);
+            document.getElementById('confidenceValue').textContent = `${avg}%`;
+        });
+
+        document.getElementById('refreshConfidenceBtn').addEventListener('click', () => {
+            const avg = (matches.reduce((s, m) => s + m.confidence, 0) / matches.length).toFixed(0);
+            document.getElementById('confidenceValue').textContent = `${avg}%`;
+            renderMatches(); // re-render to update confidence tags
+        });
+
+        document.getElementById('refreshPredTable').addEventListener('click', () => {
+            predictions = generatePredictions(matches);
+            renderPredictions();
+        });
+
+        // ================================================================
+        //  PLAN SELECTION
+        // ================================================================
+        function selectPlan(name) {
+            alert(`You selected the ${name} plan. (simulated)`);
+        }
+
+        // ================================================================
+        //  ADMIN ACTIONS
+        // ================================================================
+        document.getElementById('retrainBtn').addEventListener('click', () => {
+            alert('AI model retrained successfully! (simulated)');
+        });
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            alert('Cache cleared successfully! (simulated)');
+        });
 
         // ================================================================
         //  MOBILE NAV TOGGLE
@@ -1113,29 +1712,29 @@
         });
 
         // ================================================================
-        //  HERO CTA – scroll to matches
-        // ================================================================
-        document.getElementById('heroCta').addEventListener('click', () => {
-            document.querySelector('.matches-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-
-        // ================================================================
         //  INIT
         // ================================================================
-        renderMatches();
-        renderPlans();
-
-        // Auto-refresh matches every 30s (demo)
-        setInterval(() => {
+        function init() {
+            matches = generateMatches(24);
+            predictions = generatePredictions(matches);
+            leaderboardUsers = generateLeaderboard();
+            populateLeagueFilter();
             renderMatches();
-            // also update confidence slightly
-            const val = document.getElementById('confidenceValue');
-            const current = parseFloat(val.textContent);
-            const delta = (Math.random() - 0.5) * 4;
-            let newVal = Math.min(98, Math.max(78, current + delta));
-            val.textContent = newVal.toFixed(0) + '%';
-        }, 30000);
-    </script>
+            renderPredictions();
+            renderLeaderboard();
+            renderAdmin();
+            renderPlans();
+            updateStats();
+            // start auto-update every 8 seconds
+            setInterval(updateMatches, 8000);
+            // also update leaderboard occasionally (just for demo)
+            setInterval(() => {
+                leaderboardUsers = generateLeaderboard();
+                renderLeaderboard();
+            }, 30000);
+        }
 
+        init();
+    </script>
 </body>
 </html>
