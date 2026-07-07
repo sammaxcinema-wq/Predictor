@@ -156,6 +156,19 @@
             color: #fff;
         }
         .btn-danger:hover { background: #c0392b; }
+        .btn-ai {
+            background: linear-gradient(135deg, #10a37f, #0a7a5e);
+            color: #fff;
+        }
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(16, 163, 127, 0.35);
+        }
+        .btn-ai:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
         .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
         .btn-xs { padding: 4px 10px; font-size: 0.7rem; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
@@ -414,6 +427,10 @@
             border-radius: 50px;
             font-size: 0.65rem;
         }
+        .match-card .league .badge-ai {
+            background: #10a37f;
+            color: #fff;
+        }
         .match-card .teams {
             display: flex;
             align-items: center;
@@ -503,6 +520,14 @@
             color: var(--text-muted);
             font-weight: 400;
         }
+        .match-card .predictions .pred-tag.ai-pred {
+            background: rgba(16, 163, 127, 0.15);
+            border-color: rgba(16, 163, 127, 0.3);
+            color: #10a37f;
+        }
+        .match-card .predictions .pred-tag.ai-pred i {
+            color: #10a37f;
+        }
 
         /* ================================================================
            PREDICTION TABLE
@@ -550,6 +575,9 @@
             background: var(--accent);
             border-radius: 4px;
             transition: width 0.5s ease;
+        }
+        .pred-table .conf-bar.ai-bar span {
+            background: linear-gradient(90deg, #10a37f, #0a7a5e);
         }
 
         /* ================================================================
@@ -1040,6 +1068,9 @@
                 <button class="btn btn-outline" id="liveScoresBtn">
                     <i class="fas fa-play-circle"></i> Live Scores
                 </button>
+                <button class="btn btn-ai" id="aiPredictBtn">
+                    <i class="fas fa-microchip"></i> AI Predict All
+                </button>
             </div>
             <div class="hero-stats" id="dashboardStats">
                 <div class="stat">
@@ -1082,6 +1113,7 @@
                     <option value="finished">Finished</option>
                 </select>
                 <button class="btn btn-primary btn-sm" id="refreshMatchesBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <button class="btn btn-ai btn-sm" id="aiMatchesBtn"><i class="fas fa-microchip"></i> AI Predict</button>
             </div>
         </div>
 
@@ -1174,7 +1206,7 @@
             <div class="admin-card">
                 <h3><i class="fas fa-cog"></i> System</h3>
                 <p>Uptime: <span style="color:var(--green);">99.9%</span></p>
-                <p>Version: 3.1.0</p>
+                <p>Version: 3.2.0</p>
                 <button class="btn btn-danger btn-sm" id="clearCacheBtn"><i class="fas fa-trash"></i> Clear Cache</button>
             </div>
         </div>
@@ -1243,7 +1275,7 @@
     </div>
 
     <!-- ================================================================
-    APPLICATION JAVASCRIPT (All-in-One)
+    APPLICATION JAVASCRIPT
     ================================================================ -->
     <script>
         // ================================================================
@@ -1252,6 +1284,20 @@
         const API_BASE = 'https://worldcup26.ir';
         const REFRESH_INTERVAL = 20000;
         const MAX_RETRIES = 3;
+        
+        // ================================================================
+        //  OPENAI CONFIGURATION
+        //  ⚠️ To enable OpenAI:
+        //  1. Set enabled: true
+        //  2. Make sure your backend server is running
+        //  3. Update the endpoint URL if needed
+        // ================================================================
+        const OPENAI_CONFIG = {
+            enabled: false,  // Set to true to enable
+            endpoint: 'http://localhost:3000/api/predict',
+            // For deployment, use your actual backend URL:
+            // endpoint: 'https://your-api.com/predict'
+        };
 
         // ================================================================
         //  STATE
@@ -1263,6 +1309,7 @@
         let theme = localStorage.getItem('footy-theme') || 'dark';
         let refreshTimer = null;
         let isLoggedIn = false;
+        let isProcessingAI = false;
 
         // ================================================================
         //  DOM REFS
@@ -1309,7 +1356,7 @@
         setTheme(theme);
 
         // ================================================================
-        //  AUTH SYSTEM (Simulated - Ready for Firebase)
+        //  AUTH SYSTEM
         // ================================================================
         const authModal = $('authModal');
         const loginBtn = $('loginBtn');
@@ -1356,7 +1403,6 @@
             openModal(isLogin);
         });
 
-        // Handle auth form submission
         window.handleAuth = function(e) {
             e.preventDefault();
             const email = $('authEmail').value;
@@ -1365,7 +1411,6 @@
             const oldError = $('authError');
             if (oldError) oldError.remove();
 
-            // Simulate authentication
             if (email && password.length >= 6) {
                 isLoggedIn = true;
                 currentUser = {
@@ -1381,7 +1426,7 @@
                     plan: ['free', 'premium', 'pro'][Math.floor(Math.random() * 3)]
                 };
                 showToast(isLogin ? `Welcome back, ${currentUser.displayName}!` :
-                    `Account created successfully! Welcome to FootyAI Pro! 🎉`, 'success');
+                    `Account created successfully! 🎉`, 'success');
                 closeModalFn();
                 updateAuthUI(true);
                 renderMatches();
@@ -1404,9 +1449,8 @@
             }
         };
 
-        // Social login
         window.socialLogin = function(provider) {
-            showToast(`Signing in with ${provider}... (simulated)`, 'info');
+            showToast(`Signing in with ${provider}...`, 'info');
             setTimeout(() => {
                 isLoggedIn = true;
                 currentUser = {
@@ -1428,7 +1472,6 @@
             }, 1000);
         };
 
-        // Password reset
         window.resetPassword = function() {
             const email = $('authEmail').value;
             if (!email) {
@@ -1486,7 +1529,76 @@
         }
 
         // ================================================================
-        //  ENHANCED PREDICTION MODEL
+        //  OPENAI INTEGRATION
+        // ================================================================
+        
+        // Check if AI service is available
+        async function checkAIAvailability() {
+            if (!OPENAI_CONFIG.enabled) return false;
+            try {
+                const response = await fetch(OPENAI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: true }),
+                    signal: AbortSignal.timeout(3000)
+                });
+                return response.ok;
+            } catch (error) {
+                console.log('AI service not available:', error.message);
+                return false;
+            }
+        }
+
+        // Get AI prediction for a single match
+        async function getAIPrediction(match) {
+            if (!OPENAI_CONFIG.enabled) return null;
+
+            try {
+                const response = await fetch(OPENAI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        match: match,
+                        homeTeam: match.home,
+                        awayTeam: match.away,
+                        stats: {
+                            homeScore: match.homeScore,
+                            awayScore: match.awayScore,
+                            status: match.status,
+                            group: match.group,
+                            time: match.time
+                        }
+                    }),
+                    signal: AbortSignal.timeout(15000)
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                if (data.success && data.prediction) {
+                    const pred = data.prediction;
+                    return {
+                        type: 'AI Prediction',
+                        outcome: pred.prediction || 'Draw',
+                        confidence: pred.confidence || 70,
+                        details: {
+                            btts: pred.btts || 'N/A',
+                            overUnder: pred.overUnder || 'N/A',
+                            correctScore: pred.correctScore || 'N/A',
+                            xG: pred.xG || 'N/A',
+                            reasoning: pred.reasoning || ''
+                        }
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('AI prediction failed:', error);
+                return null;
+            }
+        }
+
+        // ================================================================
+        //  FALLBACK PREDICTION ENGINE
         // ================================================================
         function generateAdvancedPrediction(match) {
             const homeStrength = (match.homeScore !== null ? match.homeScore : getRandomInt(0, 3)) + 1;
@@ -1499,8 +1611,7 @@
 
             const predTypes = ['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG'];
             const type = predTypes[Math.floor(Math.random() * predTypes.length)];
-            let outcome;
-            let confidence;
+            let outcome, confidence;
 
             switch (type) {
                 case '1X2':
@@ -1539,6 +1650,9 @@
                     outcome = `${xg[0]} - ${xg[1]}`;
                     confidence = 55 + Math.random() * 35;
                     break;
+                default:
+                    outcome = 'Draw';
+                    confidence = 70;
             }
 
             return {
@@ -1550,26 +1664,16 @@
 
         function generateScorePredictions(homeStrength, awayStrength) {
             const possible = [
-                [1, 0],
-                [2, 0],
-                [2, 1],
-                [1, 1],
-                [0, 1],
-                [0, 2],
-                [1, 2],
-                [3, 1],
-                [1, 3],
-                [0, 0],
-                [3, 0],
-                [0, 3]
+                [1, 0], [2, 0], [2, 1], [1, 1], [0, 1],
+                [0, 2], [1, 2], [3, 1], [1, 3], [0, 0],
+                [3, 0], [0, 3]
             ];
             const weighted = possible.map(([h, a]) => {
                 const weight = Math.exp(-Math.abs(h - homeStrength * 0.8) * 0.5) *
                     Math.exp(-Math.abs(a - awayStrength * 0.8) * 0.5);
                 return { score: `${h}-${a}`, weight };
             });
-            const sorted = weighted.sort((a, b) => b.weight - a.weight);
-            return sorted.slice(0, 3).map(s => s.score);
+            return weighted.sort((a, b) => b.weight - a.weight).slice(0, 3).map(s => s.score);
         }
 
         function getRandomInt(min, max) {
@@ -1628,8 +1732,7 @@
                 if (['finished', 'completed', 'FT'].includes(m.status)) status = 'finished';
                 else if (['live', 'inprogress', 'LIVE'].includes(m.status)) status = 'live';
 
-                let homeScore = null,
-                    awayScore = null;
+                let homeScore = null, awayScore = null;
                 if (m.homeTeamGoals !== undefined && m.homeTeamGoals !== null) {
                     homeScore = m.homeTeamGoals;
                     awayScore = m.awayTeamGoals;
@@ -1653,6 +1756,8 @@
                     status,
                     time,
                     raw: m,
+                    isAIPrediction: false,
+                    aiDetails: null
                 };
 
                 const pred = generateAdvancedPrediction(match);
@@ -1669,18 +1774,10 @@
         // ================================================================
         function generateSimulatedMatches(count = 24) {
             const TEAMS = [
-                ['Brazil', 'Argentina'],
-                ['France', 'England'],
-                ['Germany', 'Spain'],
-                ['Italy', 'Portugal'],
-                ['Senegal', 'Nigeria'],
-                ['USA', 'Mexico'],
-                ['South Korea', 'Japan'],
-                ['Australia', 'New Zealand'],
-                ['Netherlands', 'Belgium'],
-                ['Croatia', 'Denmark'],
-                ['Uruguay', 'Colombia'],
-                ['Ecuador', 'Peru']
+                ['Brazil', 'Argentina'], ['France', 'England'], ['Germany', 'Spain'],
+                ['Italy', 'Portugal'], ['Senegal', 'Nigeria'], ['USA', 'Mexico'],
+                ['South Korea', 'Japan'], ['Australia', 'New Zealand'], ['Netherlands', 'Belgium'],
+                ['Croatia', 'Denmark'], ['Uruguay', 'Colombia'], ['Ecuador', 'Peru']
             ];
             const GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
             const matches = [];
@@ -1690,8 +1787,7 @@
                 const statusRand = Math.random();
                 let status = statusRand < 0.3 ? 'live' : statusRand < 0.6 ? 'finished' : 'scheduled';
 
-                let homeScore = null,
-                    awayScore = null;
+                let homeScore = null, awayScore = null;
                 if (status === 'finished') {
                     homeScore = getRandomInt(0, 4);
                     awayScore = getRandomInt(0, 4);
@@ -1714,6 +1810,8 @@
                     awayScore,
                     status,
                     time,
+                    isAIPrediction: false,
+                    aiDetails: null
                 };
 
                 const pred = generateAdvancedPrediction(match);
@@ -1759,7 +1857,7 @@
                     <div class="match-card" onclick="showMatchDetail(${m.id})">
                         <div class="league">
                             ${m.league} · Group ${m.group}
-                            <span class="badge">${m.status}</span>
+                            <span class="badge ${m.isAIPrediction ? 'badge-ai' : ''}">${m.isAIPrediction ? '🤖 AI' : m.status}</span>
                         </div>
                         <div class="teams">
                             <span class="team"><i class="fas fa-shield-alt"></i> ${m.home}</span>
@@ -1775,15 +1873,17 @@
                                 `<span class="score">${m.homeScore} : ${m.awayScore}</span>` : ''}
                         </div>
                         <div class="predictions">
-                            <span class="pred-tag">
-                                <i class="fas fa-robot"></i> ${m.predType} 
+                            <span class="pred-tag ${m.isAIPrediction ? 'ai-pred' : ''}">
+                                ${m.isAIPrediction ? '<i class="fas fa-microchip"></i>' : '<i class="fas fa-robot"></i>'} 
+                                ${m.predType} 
                                 <span class="conf">→ ${m.predOutcome}</span>
                             </span>
-                            <span class="pred-tag">
+                            <span class="pred-tag ${m.isAIPrediction ? 'ai-pred' : ''}">
                                 <i class="fas fa-bullseye"></i> ${m.confidence}% 
                                 <span class="conf">conf.</span>
                             </span>
                             ${isLoggedIn ? `<button class="btn btn-primary btn-xs" onclick="savePrediction(${m.id})">💾 Save</button>` : ''}
+                            ${OPENAI_CONFIG.enabled ? `<button class="btn btn-ai btn-xs" onclick="getSingleAIPrediction(${m.id})" ${isProcessingAI ? 'disabled' : ''}>🤖 AI</button>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -1801,10 +1901,10 @@
                     <tr>
                         <td><strong>${p.home}</strong> vs <strong>${p.away}</strong></td>
                         <td>Group ${p.group}</td>
-                        <td>${p.type}</td>
+                        <td>${p.isAI ? '🤖 AI' : '📊'} ${p.type}</td>
                         <td>${p.outcome}</td>
                         <td>
-                            <span class="conf-bar"><span style="width:${p.confidence}%;"></span></span>
+                            <span class="conf-bar ${p.isAI ? 'ai-bar' : ''}"><span style="width:${p.confidence}%;"></span></span>
                             ${p.confidence}%
                         </td>
                         <td><span class="status-badge" 
@@ -1825,7 +1925,8 @@
                 name,
                 points: getRandomInt(500, 1500),
                 correct: getRandomInt(40, 95),
-                streak: getRandomInt(1, 20)
+                streak: getRandomInt(1, 20),
+                aiAccuracy: getRandomInt(60, 90)
             })).sort((a, b) => b.points - a.points).map((u, idx) => ({ ...u, rank: idx + 1 }));
 
             const container = $('leaderboardContainer');
@@ -1839,6 +1940,7 @@
                         <div style="color:var(--text-muted);font-size:0.8rem;">
                             ✅ ${u.correct}% 
                             <span style="color:var(--green);">🔥 ${u.streak}</span>
+                            ${OPENAI_CONFIG.enabled ? `<span style="color:#10a37f;">🤖 ${u.aiAccuracy}%</span>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -1883,7 +1985,7 @@
                 price: '$19',
                 desc: 'Full access for serious bettors',
                 features: ['Unlimited predictions', 'All leagues', 'xG & advanced stats',
-                    'Live match center', 'Email support', 'Custom alerts'
+                    'Live match center', 'Email support', 'Custom alerts', 'AI-powered predictions'
                 ],
                 popular: true
             }, {
@@ -1891,7 +1993,7 @@
                 price: '$49',
                 desc: 'For professionals & syndicates',
                 features: ['Everything in Premium', 'API access', 'Custom models',
-                    'Priority support', 'White‑label reports', 'Team analytics'
+                    'Priority support', 'White‑label reports', 'Team analytics', 'OpenAI integration'
                 ],
                 popular: false
             }];
@@ -1914,15 +2016,156 @@
         function updateStats() {
             const total = allMatches.length;
             const live = allMatches.filter(m => m.status === 'live').length;
-            const finished = allMatches.filter(m => m.status === 'finished').length;
             const avgConf = total > 0 ? (allMatches.reduce((s, m) => s + m.confidence, 0) / total).toFixed(1) : '0';
+            const aiCount = allMatches.filter(m => m.isAIPrediction).length;
             $('statAccuracy').textContent = `${avgConf}%`;
             $('statMatches').textContent = total;
             $('statLeagues').textContent = new Set(allMatches.map(m => m.group)).size || '1';
             $('statLive').textContent = live;
             $('adminAccuracy').textContent = `${avgConf}%`;
-            $('confidenceValue').textContent = `${avgConf}%`;
+            $('confidenceValue').textContent = `${avgConf}%${aiCount > 0 ? ` (${aiCount} AI)` : ''}`;
         }
+
+        // ================================================================
+        //  AI PREDICTION ACTIONS
+        // ================================================================
+        
+        window.getSingleAIPrediction = async function(matchId) {
+            if (!OPENAI_CONFIG.enabled) {
+                showToast('🤖 OpenAI is not enabled. Set OPENAI_CONFIG.enabled = true', 'warning');
+                return;
+            }
+            
+            if (isProcessingAI) {
+                showToast('⏳ AI is already processing...', 'warning');
+                return;
+            }
+            
+            const match = allMatches.find(m => m.id === matchId);
+            if (!match) return;
+            
+            isProcessingAI = true;
+            showToast(`🤖 Getting AI prediction for ${match.home} vs ${match.away}...`, 'info');
+            
+            try {
+                const aiPred = await getAIPrediction(match);
+                if (aiPred) {
+                    match.predType = aiPred.type;
+                    match.predOutcome = aiPred.outcome;
+                    match.confidence = aiPred.confidence;
+                    match.isAIPrediction = true;
+                    match.aiDetails = aiPred.details;
+                    
+                    const predIndex = predictions.findIndex(p => p.matchId === matchId);
+                    if (predIndex !== -1) {
+                        predictions[predIndex] = {
+                            ...predictions[predIndex],
+                            type: aiPred.type,
+                            outcome: aiPred.outcome,
+                            confidence: aiPred.confidence,
+                            isAI: true,
+                            details: aiPred.details
+                        };
+                    }
+                    
+                    renderMatches();
+                    updateStats();
+                    
+                    showToast(
+                        `🤖 AI: ${aiPred.outcome} (${aiPred.confidence}%)\n` +
+                        `${aiPred.details?.reasoning || 'AI prediction complete'}`,
+                        'success',
+                        5000
+                    );
+                } else {
+                    showToast('AI prediction failed, using fallback', 'warning');
+                }
+            } catch (error) {
+                showToast('AI error: ' + error.message, 'error');
+            }
+            isProcessingAI = false;
+        };
+
+        window.getAIPredictionsAll = async function() {
+            if (!OPENAI_CONFIG.enabled) {
+                showToast('🤖 OpenAI is not enabled. Set OPENAI_CONFIG.enabled = true', 'warning');
+                return;
+            }
+            
+            if (isProcessingAI) {
+                showToast('⏳ AI is already processing...', 'warning');
+                return;
+            }
+            
+            if (allMatches.length === 0) {
+                showToast('No matches to predict', 'warning');
+                return;
+            }
+            
+            isProcessingAI = true;
+            const total = allMatches.length;
+            showToast(`🤖 Getting AI predictions for ${total} matches...`, 'info');
+            
+            let aiCount = 0;
+            let failedCount = 0;
+            
+            // Process in batches
+            const batchSize = 3;
+            for (let i = 0; i < allMatches.length; i += batchSize) {
+                const batch = allMatches.slice(i, i + batchSize);
+                const batchPromises = batch.map(async (match) => {
+                    try {
+                        const aiPred = await getAIPrediction(match);
+                        if (aiPred) {
+                            match.predType = aiPred.type;
+                            match.predOutcome = aiPred.outcome;
+                            match.confidence = aiPred.confidence;
+                            match.isAIPrediction = true;
+                            match.aiDetails = aiPred.details;
+                            
+                            const predIndex = predictions.findIndex(p => p.matchId === match.id);
+                            if (predIndex !== -1) {
+                                predictions[predIndex] = {
+                                    ...predictions[predIndex],
+                                    type: aiPred.type,
+                                    outcome: aiPred.outcome,
+                                    confidence: aiPred.confidence,
+                                    isAI: true,
+                                    details: aiPred.details
+                                };
+                            }
+                            aiCount++;
+                            return true;
+                        }
+                        failedCount++;
+                        return false;
+                    } catch (error) {
+                        console.error('AI prediction failed for match:', match.id, error);
+                        failedCount++;
+                        return false;
+                    }
+                });
+                
+                await Promise.all(batchPromises);
+                
+                // Update progress
+                const progress = Math.min(i + batchSize, total);
+                showToast(`🤖 Progress: ${progress}/${total} matches (${aiCount} successful)`, 'info', 2000);
+                
+                // Small delay between batches to avoid rate limits
+                if (i + batchSize < total) {
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }
+            
+            renderMatches();
+            renderPredictions();
+            updateStats();
+            
+            isProcessingAI = false;
+            showToast(`🤖 AI Complete! ${aiCount}/${total} matches predicted. ${failedCount > 0 ? `⚠️ ${failedCount} failed` : ''}`, 
+                failedCount > 0 ? 'warning' : 'success');
+        };
 
         // ================================================================
         //  MATCH DETAIL & ACTIONS
@@ -1930,14 +2173,25 @@
         window.showMatchDetail = function(matchId) {
             const match = allMatches.find(m => m.id === matchId);
             if (!match) return;
-            showToast(
-                `⚽ ${match.home} vs ${match.away}\n` +
-                `📊 ${match.predType}: ${match.predOutcome}\n` +
-                `🎯 ${match.confidence}% confidence\n` +
-                `📅 ${match.time} | Group ${match.group}`,
-                'info',
-                5000
-            );
+            
+            let details = `⚽ ${match.home} vs ${match.away}\n`;
+            details += `📊 ${match.predType}: ${match.predOutcome}\n`;
+            details += `🎯 ${match.confidence}% confidence\n`;
+            details += `📅 ${match.time} | Group ${match.group}\n`;
+            details += `${match.isAIPrediction ? '🤖 AI-powered prediction' : '📊 Local prediction'}\n`;
+            
+            if (match.isAIPrediction && match.aiDetails) {
+                details += `\n🤖 AI Details:\n`;
+                details += `• BTTS: ${match.aiDetails.btts || 'N/A'}\n`;
+                details += `• Over/Under: ${match.aiDetails.overUnder || 'N/A'}\n`;
+                details += `• Correct Score: ${match.aiDetails.correctScore || 'N/A'}\n`;
+                details += `• xG: ${match.aiDetails.xG || 'N/A'}\n`;
+                if (match.aiDetails.reasoning) {
+                    details += `• Reasoning: ${match.aiDetails.reasoning}\n`;
+                }
+            }
+            
+            showToast(details, 'info', 6000);
         };
 
         window.savePrediction = function(matchId) {
@@ -1949,10 +2203,8 @@
             const match = allMatches.find(m => m.id === matchId);
             if (!match) return;
             
-            // Simulate saving
             if (userData) {
                 userData.totalPredictions = (userData.totalPredictions || 0) + 1;
-                // Randomly mark as correct 60% of the time
                 if (Math.random() > 0.4) {
                     userData.correctPredictions = (userData.correctPredictions || 0) + 1;
                     userData.streak = (userData.streak || 0) + 1;
@@ -1962,7 +2214,8 @@
                 userData.points = (userData.points || 0) + getRandomInt(5, 20);
             }
             
-            showToast(`✅ Prediction saved: ${match.home} vs ${match.away}\n🎯 ${match.predOutcome} (${match.confidence}% confidence)`, 'success', 4000);
+            const aiTag = match.isAIPrediction ? ' 🤖' : '';
+            showToast(`✅ Saved: ${match.home} vs ${match.away}\n🎯 ${match.predOutcome} (${match.confidence}%)${aiTag}`, 'success', 4000);
         };
 
         window.selectPlan = function(name) {
@@ -1975,7 +2228,8 @@
                 userData.plan = name.toLowerCase();
             }
             const emoji = name.toLowerCase() === 'free' ? '🆓' : name.toLowerCase() === 'premium' ? '⭐' : '💎';
-            showToast(`${emoji} You selected the ${name} plan! 🎉\nUpgrade to unlock all features.`, 'success', 4000);
+            const aiFeature = name.toLowerCase() !== 'free' ? '\n🤖 AI-powered predictions included!' : '';
+            showToast(`${emoji} ${name} plan selected! 🎉${aiFeature}`, 'success', 4000);
         };
 
         // ================================================================
@@ -1984,6 +2238,17 @@
         async function loadData() {
             $('matchesLoader').style.display = 'block';
             $('predLoader').style.display = 'block';
+
+            // Check AI availability
+            if (OPENAI_CONFIG.enabled) {
+                const available = await checkAIAvailability();
+                if (!available) {
+                    showToast('⚠️ AI service not available, using fallback predictions', 'warning');
+                    OPENAI_CONFIG.enabled = false;
+                } else {
+                    showToast('🤖 OpenAI service connected!', 'success');
+                }
+            }
 
             try {
                 const [teamMap, apiMatches] = await Promise.all([fetchTeams(), fetchMatches()]);
@@ -2012,7 +2277,9 @@
                 outcome: m.predOutcome,
                 confidence: m.confidence,
                 status: m.status,
-                score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-'
+                score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-',
+                isAI: m.isAIPrediction || false,
+                details: m.aiDetails || null
             }));
 
             populateGroupFilter();
@@ -2035,7 +2302,15 @@
                 const teamMap = await fetchTeams();
                 const apiMatches = await fetchMatches();
                 if (apiMatches && teamMap) {
-                    allMatches = transformMatches(apiMatches, teamMap);
+                    const newMatches = transformMatches(apiMatches, teamMap);
+                    // Preserve AI predictions if they exist
+                    allMatches = newMatches.map(newMatch => {
+                        const oldMatch = allMatches.find(m => m.id === newMatch.id);
+                        if (oldMatch && oldMatch.isAIPrediction) {
+                            return { ...newMatch, isAIPrediction: true, aiDetails: oldMatch.aiDetails };
+                        }
+                        return newMatch;
+                    });
                     predictions = allMatches.map(m => ({
                         matchId: m.id,
                         home: m.home,
@@ -2046,7 +2321,9 @@
                         outcome: m.predOutcome,
                         confidence: m.confidence,
                         status: m.status,
-                        score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-'
+                        score: (m.homeScore !== null && m.awayScore !== null) ? `${m.homeScore}-${m.awayScore}` : '-',
+                        isAI: m.isAIPrediction || false,
+                        details: m.aiDetails || null
                     }));
                     populateGroupFilter();
                     renderMatches();
@@ -2120,13 +2397,17 @@
         });
 
         $('retrainBtn').addEventListener('click', () => {
-            showToast('🧠 AI model retrained successfully! New accuracy: ' + 
-                (70 + Math.floor(Math.random() * 20)) + '%', 'success');
+            const newAccuracy = 70 + Math.floor(Math.random() * 20);
+            showToast(`🧠 AI model retrained! New accuracy: ${newAccuracy}%`, 'success');
         });
 
         $('clearCacheBtn').addEventListener('click', () => {
             showToast('🗑️ Cache cleared successfully!', 'success');
         });
+
+        // AI Buttons
+        $('aiPredictBtn')?.addEventListener('click', getAIPredictionsAll);
+        $('aiMatchesBtn')?.addEventListener('click', getAIPredictionsAll);
 
         // ================================================================
         //  MOBILE NAV
@@ -2142,60 +2423,61 @@
         });
 
         // ================================================================
-        //  PWA – SERVICE WORKER (Auto-generate)
+        //  KEYBOARD SHORTCUTS
+        // ================================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
+                e.preventDefault();
+                const tabs = ['dashboard', 'matches', 'predictions', 'leaderboard', 'admin'];
+                switchTab(tabs[parseInt(e.key) - 1]);
+            }
+            if (e.key === 'Escape' && authModal.classList.contains('active')) {
+                closeModalFn();
+            }
+            if (e.ctrlKey && e.key === 'a' && OPENAI_CONFIG.enabled) {
+                e.preventDefault();
+                getAIPredictionsAll();
+            }
+            if (e.ctrlKey && e.key === 'l' && isLoggedIn) {
+                e.preventDefault();
+                showToast(`👤 ${currentUser?.displayName || 'User'}\nPoints: ${userData?.points || 0}`, 'info');
+            }
+        });
+
+        // ================================================================
+        //  PWA – SERVICE WORKER
         // ================================================================
         if ('serviceWorker' in navigator) {
             try {
                 const swCode = `
-                    self.addEventListener('install', e => { 
-                        e.waitUntil(self.skipWaiting()); 
-                    });
-                    self.addEventListener('activate', e => { 
-                        e.waitUntil(self.clients.claim()); 
-                    });
+                    self.addEventListener('install', e => { e.waitUntil(self.skipWaiting()); });
+                    self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
                     self.addEventListener('fetch', e => { 
-                        e.respondWith(
-                            fetch(e.request).catch(() => caches.match(e.request))
-                        ); 
+                        e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); 
                     });
                 `;
                 const blob = new Blob([swCode], { type: 'application/javascript' });
                 const swUrl = URL.createObjectURL(blob);
                 navigator.serviceWorker.register(swUrl)
-                    .then(reg => console.log('✅ Service Worker registered'))
-                    .catch(err => console.log('⚠️ Service Worker registration skipped'));
+                    .then(() => console.log('✅ Service Worker registered'))
+                    .catch(() => console.log('⚠️ Service Worker skipped'));
             } catch (e) {
                 console.log('Service Worker not available');
             }
         }
 
         // ================================================================
-        //  KEYBOARD SHORTCUTS
-        // ================================================================
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+1-5 to switch tabs
-            if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
-                e.preventDefault();
-                const tabs = ['dashboard', 'matches', 'predictions', 'leaderboard', 'admin'];
-                switchTab(tabs[parseInt(e.key) - 1]);
-            }
-            // Escape to close modal
-            if (e.key === 'Escape' && authModal.classList.contains('active')) {
-                closeModalFn();
-            }
-        });
-
-        // ================================================================
         //  INIT
         // ================================================================
-        // Set initial auth state
         updateAuthUI(false);
         loadData();
 
-        console.log('🏆 FootyAI Pro v3.1.0 loaded!');
+        console.log('🏆 FootyAI Pro v3.2.0 loaded!');
         console.log('📊 Features: Real API, AI Predictions, Theme Toggle, PWA, Auth');
-        console.log('💡 Keyboard shortcuts: Ctrl+1-5 to switch tabs');
-        console.log('🔑 Try logging in with any email (password min 6 chars)');
+        console.log('💡 Keyboard shortcuts: Ctrl+1-5 tabs, Ctrl+A AI predictions, Ctrl+L user info');
+        console.log(`🤖 OpenAI: ${OPENAI_CONFIG.enabled ? 'ENABLED ✅' : 'DISABLED ❌'}`);
+        console.log('🔑 Login with any email (password min 6 chars)');
+        console.log('📝 To enable OpenAI: set OPENAI_CONFIG.enabled = true and start the backend server');
     </script>
 </body>
 </html>
