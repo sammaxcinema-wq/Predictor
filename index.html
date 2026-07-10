@@ -276,6 +276,105 @@
         }
 
         /* ================================================================
+           AI KEY PANEL
+           ================================================================ */
+        .ai-key-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+        .ai-key-panel .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .ai-key-panel .panel-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        .ai-key-panel .panel-header h3 i {
+            color: var(--accent);
+        }
+        .ai-key-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .ai-key-input-group input {
+            flex: 1;
+            min-width: 280px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: 'Courier New', monospace;
+        }
+        .ai-key-input-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.15);
+        }
+        .ai-key-input-group input::placeholder {
+            color: var(--text-muted);
+            font-family: var(--font);
+        }
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .ai-status .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .ai-status .dot.active {
+            background: var(--green);
+            animation: pulse-dot 2s infinite;
+        }
+        .ai-status .dot.inactive {
+            background: var(--text-muted);
+        }
+        .ai-status .dot.testing {
+            background: var(--orange);
+            animation: pulse-dot 0.8s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        .ai-key-panel .panel-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-key-panel .panel-hint i {
+            color: var(--accent-light);
+        }
+        .key-masked {
+            font-family: 'Courier New', monospace;
+            color: var(--accent-light);
+            background: rgba(124, 92, 252, 0.08);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* ================================================================
            HERO
            ================================================================ */
         .hero {
@@ -912,8 +1011,7 @@
         }
 
         /* ================================================================
-           FOOTER
-           ================================================================ */
+           FOOTER           ================================================================ */
         .footer {
             margin-top: auto;
             padding: 24px 0;
@@ -981,6 +1079,19 @@
             .pred-table-wrap { border-radius: var(--radius-sm); }
             .pred-table { font-size: 0.8rem; min-width: 480px; }
             .pred-table th, .pred-table td { padding: 8px 10px; }
+
+            .ai-key-panel .panel-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ai-key-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ai-key-input-group input {
+                min-width: unset;
+                width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1114,6 +1225,37 @@
                 </select>
                 <button class="btn btn-primary btn-sm" id="refreshMatchesBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
                 <button class="btn btn-ai btn-sm" id="aiMatchesBtn"><i class="fas fa-microchip"></i> AI Predict</button>
+            </div>
+        </div>
+
+        <!-- AI Key Panel -->
+        <div class="ai-key-panel" id="aiKeyPanel">
+            <div class="panel-header">
+                <h3>
+                    <i class="fas fa-key"></i>
+                    OpenAI API Key
+                    <span class="ai-status" id="aiStatus">
+                        <span class="dot inactive" id="aiStatusDot"></span>
+                        <span id="aiStatusText">Not Configured</span>
+                    </span>
+                </h3>
+                <div class="ai-key-input-group">
+                    <input type="password" id="apiKeyInput" placeholder="sk-... Enter your OpenAI API key" />
+                    <button class="btn btn-primary btn-sm" id="saveApiKeyBtn">
+                        <i class="fas fa-save"></i> Activate AI
+                    </button>
+                    <button class="btn btn-outline btn-sm" id="testApiKeyBtn">
+                        <i class="fas fa-vial"></i> Test
+                    </button>
+                    <button class="btn btn-danger btn-sm" id="removeApiKeyBtn">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-hint">
+                <i class="fas fa-info-circle"></i>
+                Your API key is stored securely in your browser's local storage. 
+                <span id="keyStatusDisplay">No key set</span>
             </div>
         </div>
 
@@ -1286,18 +1428,238 @@
         const MAX_RETRIES = 3;
         
         // ================================================================
-        //  OPENAI CONFIGURATION
-        //  ⚠️ To enable OpenAI:
-        //  1. Set enabled: true
-        //  2. Make sure your backend server is running
-        //  3. Update the endpoint URL if needed
+        //  AI CONFIGURATION - API Key stored securely in local storage
         // ================================================================
-        const OPENAI_CONFIG = {
-            enabled: false,  // Set to true to enable
-            endpoint: 'http://localhost:3000/api/predict',
-            // For deployment, use your actual backend URL:
-            // endpoint: 'https://your-api.com/predict'
+        const AI_CONFIG = {
+            enabled: false,
+            apiKey: null,
+            // OpenAI API endpoint (direct or via proxy)
+            endpoint: 'https://api.openai.com/v1/chat/completions',
+            // For proxy mode (recommended for production):
+            // endpoint: 'https://your-proxy-server.com/api/openai',
+            model: 'gpt-4o-mini',
+            maxTokens: 300
         };
+
+        // Load API key from local storage
+        function loadApiKey() {
+            const savedKey = localStorage.getItem('openai_api_key');
+            if (savedKey) {
+                AI_CONFIG.apiKey = savedKey;
+                AI_CONFIG.enabled = true;
+                return true;
+            }
+            return false;
+        }
+
+        // Save API key to local storage
+        function saveApiKey(key) {
+            if (key && key.trim().startsWith('sk-')) {
+                localStorage.setItem('openai_api_key', key.trim());
+                AI_CONFIG.apiKey = key.trim();
+                AI_CONFIG.enabled = true;
+                updateAiStatusUI(true, 'Active');
+                showToast('🔑 API key saved successfully!', 'success');
+                return true;
+            } else {
+                showToast('❌ Please enter a valid OpenAI API key (starts with sk-)', 'error');
+                return false;
+            }
+        }
+
+        // Remove API key
+        function removeApiKey() {
+            localStorage.removeItem('openai_api_key');
+            AI_CONFIG.apiKey = null;
+            AI_CONFIG.enabled = false;
+            updateAiStatusUI(false, 'Not Configured');
+            document.getElementById('apiKeyInput').value = '';
+            document.getElementById('keyStatusDisplay').textContent = 'No key set';
+            showToast('🔑 API key removed', 'info');
+        }
+
+        // ================================================================
+        //  AI STATUS UI
+        // ================================================================
+        function updateAiStatusUI(enabled, statusText) {
+            const dot = document.getElementById('aiStatusDot');
+            const text = document.getElementById('aiStatusText');
+            const display = document.getElementById('keyStatusDisplay');
+            
+            if (enabled) {
+                dot.className = 'dot active';
+                text.textContent = statusText || 'Active';
+                display.textContent = `✅ Key set (${AI_CONFIG.apiKey ? AI_CONFIG.apiKey.substring(0, 8) + '...' : ''})`;
+                document.getElementById('apiKeyInput').placeholder = 'Key is set (hidden)';
+            } else {
+                dot.className = 'dot inactive';
+                text.textContent = statusText || 'Not Configured';
+                display.textContent = 'No key set';
+                document.getElementById('apiKeyInput').placeholder = 'sk-... Enter your OpenAI API key';
+            }
+        }
+
+        // ================================================================
+        //  TEST API KEY
+        // ================================================================
+        async function testApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim() || AI_CONFIG.apiKey;
+            if (!key || !key.startsWith('sk-')) {
+                showToast('❌ Please enter a valid OpenAI API key (starts with sk-)', 'error');
+                return false;
+            }
+
+            const dot = document.getElementById('aiStatusDot');
+            const text = document.getElementById('aiStatusText');
+            dot.className = 'dot testing';
+            text.textContent = 'Testing...';
+
+            try {
+                const response = await fetch(AI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify({
+                        model: AI_CONFIG.model,
+                        messages: [
+                            { role: 'system', content: 'You are a helpful assistant.' },
+                            { role: 'user', content: 'Reply with exactly "OK" if you can read this.' }
+                        ],
+                        max_tokens: 10
+                    }),
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (response.ok) {
+                    dot.className = 'dot active';
+                    text.textContent = 'Valid ✅';
+                    showToast('✅ API key is valid!', 'success');
+                    return true;
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    dot.className = 'dot inactive';
+                    text.textContent = 'Invalid ❌';
+                    showToast(`❌ API key test failed: ${error.error?.message || 'Invalid key'}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                dot.className = 'dot inactive';
+                text.textContent = 'Error ❌';
+                showToast(`❌ Connection error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // ================================================================
+        //  OPENAI INTEGRATION
+        // ================================================================
+        
+        // Get AI prediction using OpenAI
+        async function getAIPrediction(match) {
+            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
+                return null;
+            }
+
+            try {
+                const prompt = `You are a football prediction expert. Predict the outcome of this match:
+                Match: ${match.home} vs ${match.away}
+                Tournament: World Cup 2026
+                Group: ${match.group}
+                Status: ${match.status}
+                ${match.homeScore !== null ? `Current Score: ${match.homeScore}-${match.awayScore}` : ''}
+                
+                Provide your prediction in this exact JSON format:
+                {
+                    "prediction": "Home Win|Draw|Away Win",
+                    "confidence": 0-100,
+                    "btts": "Yes|No",
+                    "overUnder": "Over 2.5|Under 2.5",
+                    "correctScore": "score prediction",
+                    "xG": "home_xG - away_xG",
+                    "reasoning": "brief explanation"
+                }
+                Return ONLY the JSON object, nothing else.`;
+
+                const response = await fetch(AI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${AI_CONFIG.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: AI_CONFIG.model,
+                        messages: [
+                            { role: 'system', content: 'You are a football prediction expert. Always respond with valid JSON.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        max_tokens: AI_CONFIG.maxTokens,
+                        temperature: 0.7
+                    }),
+                    signal: AbortSignal.timeout(15000)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json().catch(() => ({}));
+                    throw new Error(error.error?.message || `HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const content = data.choices?.[0]?.message?.content || '';
+                
+                // Extract JSON from the response
+                const jsonMatch = content.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error('No JSON found in response');
+                
+                const pred = JSON.parse(jsonMatch[0]);
+                
+                return {
+                    type: 'AI Prediction',
+                    outcome: pred.prediction || 'Draw',
+                    confidence: pred.confidence || 70,
+                    details: {
+                        btts: pred.btts || 'N/A',
+                        overUnder: pred.overUnder || 'N/A',
+                        correctScore: pred.correctScore || 'N/A',
+                        xG: pred.xG || 'N/A',
+                        reasoning: pred.reasoning || ''
+                    }
+                };
+            } catch (error) {
+                console.error('AI prediction failed:', error);
+                return null;
+            }
+        }
+
+        // Batch AI predictions
+        async function getBatchAIPredictions(matches) {
+            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
+                return null;
+            }
+
+            const results = {};
+            const batchSize = 5; // Process in batches to avoid rate limits
+
+            for (let i = 0; i < matches.length; i += batchSize) {
+                const batch = matches.slice(i, i + batchSize);
+                const batchPromises = batch.map(async (match) => {
+                    const result = await getAIPrediction(match);
+                    if (result) {
+                        results[match.id] = result;
+                    }
+                    return result;
+                });
+                await Promise.all(batchPromises);
+                
+                // Small delay between batches
+                if (i + batchSize < matches.length) {
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }
+
+            return results;
+        }
 
         // ================================================================
         //  STATE
@@ -1525,75 +1887,6 @@
                     heroCta.innerHTML = `<i class="fas fa-robot"></i> Explore Matches`;
                     heroCta.onclick = () => switchTab('matches');
                 }
-            }
-        }
-
-        // ================================================================
-        //  OPENAI INTEGRATION
-        // ================================================================
-        
-        // Check if AI service is available
-        async function checkAIAvailability() {
-            if (!OPENAI_CONFIG.enabled) return false;
-            try {
-                const response = await fetch(OPENAI_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ test: true }),
-                    signal: AbortSignal.timeout(3000)
-                });
-                return response.ok;
-            } catch (error) {
-                console.log('AI service not available:', error.message);
-                return false;
-            }
-        }
-
-        // Get AI prediction for a single match
-        async function getAIPrediction(match) {
-            if (!OPENAI_CONFIG.enabled) return null;
-
-            try {
-                const response = await fetch(OPENAI_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        match: match,
-                        homeTeam: match.home,
-                        awayTeam: match.away,
-                        stats: {
-                            homeScore: match.homeScore,
-                            awayScore: match.awayScore,
-                            status: match.status,
-                            group: match.group,
-                            time: match.time
-                        }
-                    }),
-                    signal: AbortSignal.timeout(15000)
-                });
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                
-                if (data.success && data.prediction) {
-                    const pred = data.prediction;
-                    return {
-                        type: 'AI Prediction',
-                        outcome: pred.prediction || 'Draw',
-                        confidence: pred.confidence || 70,
-                        details: {
-                            btts: pred.btts || 'N/A',
-                            overUnder: pred.overUnder || 'N/A',
-                            correctScore: pred.correctScore || 'N/A',
-                            xG: pred.xG || 'N/A',
-                            reasoning: pred.reasoning || ''
-                        }
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error('AI prediction failed:', error);
-                return null;
             }
         }
 
@@ -1883,7 +2176,7 @@
                                 <span class="conf">conf.</span>
                             </span>
                             ${isLoggedIn ? `<button class="btn btn-primary btn-xs" onclick="savePrediction(${m.id})">💾 Save</button>` : ''}
-                            ${OPENAI_CONFIG.enabled ? `<button class="btn btn-ai btn-xs" onclick="getSingleAIPrediction(${m.id})" ${isProcessingAI ? 'disabled' : ''}>🤖 AI</button>` : ''}
+                            ${AI_CONFIG.enabled ? `<button class="btn btn-ai btn-xs" onclick="getSingleAIPrediction(${m.id})" ${isProcessingAI ? 'disabled' : ''}>🤖 AI</button>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -1940,7 +2233,7 @@
                         <div style="color:var(--text-muted);font-size:0.8rem;">
                             ✅ ${u.correct}% 
                             <span style="color:var(--green);">🔥 ${u.streak}</span>
-                            ${OPENAI_CONFIG.enabled ? `<span style="color:#10a37f;">🤖 ${u.aiAccuracy}%</span>` : ''}
+                            ${AI_CONFIG.enabled ? `<span style="color:#10a37f;">🤖 ${u.aiAccuracy}%</span>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -2031,8 +2324,9 @@
         // ================================================================
         
         window.getSingleAIPrediction = async function(matchId) {
-            if (!OPENAI_CONFIG.enabled) {
-                showToast('🤖 OpenAI is not enabled. Set OPENAI_CONFIG.enabled = true', 'warning');
+            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
+                showToast('🔑 Please enter your OpenAI API key first!', 'warning');
+                document.getElementById('apiKeyInput').focus();
                 return;
             }
             
@@ -2087,8 +2381,9 @@
         };
 
         window.getAIPredictionsAll = async function() {
-            if (!OPENAI_CONFIG.enabled) {
-                showToast('🤖 OpenAI is not enabled. Set OPENAI_CONFIG.enabled = true', 'warning');
+            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
+                showToast('🔑 Please enter your OpenAI API key first!', 'warning');
+                document.getElementById('apiKeyInput').focus();
                 return;
             }
             
@@ -2104,67 +2399,72 @@
             
             isProcessingAI = true;
             const total = allMatches.length;
-            showToast(`🤖 Getting AI predictions for ${total} matches...`, 'info');
+            showToast(`🤖 Getting AI predictions for ${total} matches...\nThis may take a moment.`, 'info');
             
             let aiCount = 0;
             let failedCount = 0;
             
-            // Process in batches
-            const batchSize = 3;
-            for (let i = 0; i < allMatches.length; i += batchSize) {
-                const batch = allMatches.slice(i, i + batchSize);
-                const batchPromises = batch.map(async (match) => {
-                    try {
-                        const aiPred = await getAIPrediction(match);
-                        if (aiPred) {
-                            match.predType = aiPred.type;
-                            match.predOutcome = aiPred.outcome;
-                            match.confidence = aiPred.confidence;
-                            match.isAIPrediction = true;
-                            match.aiDetails = aiPred.details;
-                            
-                            const predIndex = predictions.findIndex(p => p.matchId === match.id);
-                            if (predIndex !== -1) {
-                                predictions[predIndex] = {
-                                    ...predictions[predIndex],
-                                    type: aiPred.type,
-                                    outcome: aiPred.outcome,
-                                    confidence: aiPred.confidence,
-                                    isAI: true,
-                                    details: aiPred.details
-                                };
+            try {
+                // Process in batches to avoid rate limits
+                const batchSize = 3;
+                for (let i = 0; i < allMatches.length; i += batchSize) {
+                    const batch = allMatches.slice(i, i + batchSize);
+                    const batchPromises = batch.map(async (match) => {
+                        try {
+                            const aiPred = await getAIPrediction(match);
+                            if (aiPred) {
+                                match.predType = aiPred.type;
+                                match.predOutcome = aiPred.outcome;
+                                match.confidence = aiPred.confidence;
+                                match.isAIPrediction = true;
+                                match.aiDetails = aiPred.details;
+                                
+                                const predIndex = predictions.findIndex(p => p.matchId === match.id);
+                                if (predIndex !== -1) {
+                                    predictions[predIndex] = {
+                                        ...predictions[predIndex],
+                                        type: aiPred.type,
+                                        outcome: aiPred.outcome,
+                                        confidence: aiPred.confidence,
+                                        isAI: true,
+                                        details: aiPred.details
+                                    };
+                                }
+                                aiCount++;
+                                return true;
                             }
-                            aiCount++;
-                            return true;
+                            failedCount++;
+                            return false;
+                        } catch (error) {
+                            console.error('AI prediction failed for match:', match.id, error);
+                            failedCount++;
+                            return false;
                         }
-                        failedCount++;
-                        return false;
-                    } catch (error) {
-                        console.error('AI prediction failed for match:', match.id, error);
-                        failedCount++;
-                        return false;
+                    });
+                    
+                    await Promise.all(batchPromises);
+                    
+                    // Update progress
+                    const progress = Math.min(i + batchSize, total);
+                    showToast(`🤖 Progress: ${progress}/${total} matches (${aiCount} successful)`, 'info', 2000);
+                    
+                    // Small delay between batches to avoid rate limits
+                    if (i + batchSize < total) {
+                        await new Promise(r => setTimeout(r, 1000));
                     }
-                });
-                
-                await Promise.all(batchPromises);
-                
-                // Update progress
-                const progress = Math.min(i + batchSize, total);
-                showToast(`🤖 Progress: ${progress}/${total} matches (${aiCount} successful)`, 'info', 2000);
-                
-                // Small delay between batches to avoid rate limits
-                if (i + batchSize < total) {
-                    await new Promise(r => setTimeout(r, 1000));
                 }
+                
+                renderMatches();
+                renderPredictions();
+                updateStats();
+                
+                showToast(`🤖 AI Complete! ${aiCount}/${total} matches predicted. ${failedCount > 0 ? `⚠️ ${failedCount} failed` : ''}`, 
+                    failedCount > 0 ? 'warning' : 'success');
+            } catch (error) {
+                showToast('AI processing failed: ' + error.message, 'error');
             }
             
-            renderMatches();
-            renderPredictions();
-            updateStats();
-            
             isProcessingAI = false;
-            showToast(`🤖 AI Complete! ${aiCount}/${total} matches predicted. ${failedCount > 0 ? `⚠️ ${failedCount} failed` : ''}`, 
-                failedCount > 0 ? 'warning' : 'success');
         };
 
         // ================================================================
@@ -2239,15 +2539,35 @@
             $('matchesLoader').style.display = 'block';
             $('predLoader').style.display = 'block';
 
-            // Check AI availability
-            if (OPENAI_CONFIG.enabled) {
-                const available = await checkAIAvailability();
-                if (!available) {
-                    showToast('⚠️ AI service not available, using fallback predictions', 'warning');
-                    OPENAI_CONFIG.enabled = false;
-                } else {
-                    showToast('🤖 OpenAI service connected!', 'success');
+            // Load API key from storage
+            const hasKey = loadApiKey();
+            if (hasKey) {
+                updateAiStatusUI(true, 'Active');
+                // Test the key silently
+                try {
+                    const response = await fetch(AI_CONFIG.endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${AI_CONFIG.apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: AI_CONFIG.model,
+                            messages: [{ role: 'user', content: 'Say OK' }],
+                            max_tokens: 5
+                        }),
+                        signal: AbortSignal.timeout(5000)
+                    });
+                    if (!response.ok) {
+                        updateAiStatusUI(false, 'Invalid Key');
+                        AI_CONFIG.enabled = false;
+                        showToast('⚠️ Saved API key is invalid. Please update it.', 'warning');
+                    }
+                } catch (e) {
+                    // Silent fail - will test when user tries to use AI
                 }
+            } else {
+                updateAiStatusUI(false, 'Not Configured');
             }
 
             try {
@@ -2373,6 +2693,77 @@
         });
 
         // ================================================================
+        //  AI KEY PANEL EVENT BINDINGS
+        // ================================================================
+        
+        // Save API Key
+        $('saveApiKeyBtn').addEventListener('click', async () => {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (!key) {
+                showToast('❌ Please enter an API key', 'error');
+                return;
+            }
+            
+            // Test the key before saving
+            const dot = document.getElementById('aiStatusDot');
+            const text = document.getElementById('aiStatusText');
+            dot.className = 'dot testing';
+            text.textContent = 'Testing...';
+            
+            try {
+                const response = await fetch(AI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify({
+                        model: AI_CONFIG.model,
+                        messages: [{ role: 'user', content: 'Say "OK" if you can read this.' }],
+                        max_tokens: 10
+                    }),
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (response.ok) {
+                    saveApiKey(key);
+                    dot.className = 'dot active';
+                    text.textContent = 'Valid ✅';
+                } else {
+                    const error = await response.json().catch(() => ({}));
+                    dot.className = 'dot inactive';
+                    text.textContent = 'Invalid ❌';
+                    showToast(`❌ Invalid API key: ${error.error?.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                dot.className = 'dot inactive';
+                text.textContent = 'Error ❌';
+                showToast(`❌ Connection error: ${error.message}`, 'error');
+            }
+        });
+
+        // Test API Key
+        $('testApiKeyBtn').addEventListener('click', testApiKey);
+
+        // Remove API Key
+        $('removeApiKeyBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to remove the API key?')) {
+                removeApiKey();
+            }
+        });
+
+        // Enter key in input field triggers save
+        document.getElementById('apiKeyInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                $('saveApiKeyBtn').click();
+            }
+        });
+
+        // Show/hide key toggle (optional - add eye icon if desired)
+        // For now we use password type for security
+
+        // ================================================================
         //  EVENT BINDINGS
         // ================================================================
         $('groupFilter').addEventListener('change', renderMatches);
@@ -2434,7 +2825,7 @@
             if (e.key === 'Escape' && authModal.classList.contains('active')) {
                 closeModalFn();
             }
-            if (e.ctrlKey && e.key === 'a' && OPENAI_CONFIG.enabled) {
+            if (e.ctrlKey && e.key === 'a' && AI_CONFIG.enabled) {
                 e.preventDefault();
                 getAIPredictionsAll();
             }
@@ -2473,11 +2864,11 @@
         loadData();
 
         console.log('🏆 FootyAI Pro v3.2.0 loaded!');
-        console.log('📊 Features: Real API, AI Predictions, Theme Toggle, PWA, Auth');
+        console.log('📊 Features: Real API, OpenAI Integration, Theme Toggle, PWA, Auth');
         console.log('💡 Keyboard shortcuts: Ctrl+1-5 tabs, Ctrl+A AI predictions, Ctrl+L user info');
-        console.log(`🤖 OpenAI: ${OPENAI_CONFIG.enabled ? 'ENABLED ✅' : 'DISABLED ❌'}`);
-        console.log('🔑 Login with any email (password min 6 chars)');
-        console.log('📝 To enable OpenAI: set OPENAI_CONFIG.enabled = true and start the backend server');
+        console.log(`🤖 OpenAI: ${AI_CONFIG.enabled ? 'ENABLED ✅' : 'DISABLED ❌'}`);
+        console.log('🔑 Enter your OpenAI API key in the panel above to activate AI predictions');
+        console.log('📝 Get your API key at: https://platform.openai.com/api-keys');
     </script>
 </body>
 </html>
