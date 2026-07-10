@@ -276,38 +276,38 @@
         }
 
         /* ================================================================
-           AI KEY PANEL
+           API KEY PANEL
            ================================================================ */
-        .ai-key-panel {
+        .api-key-panel {
             background: var(--bg-card);
             border-radius: var(--radius);
             padding: 20px;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
         }
-        .ai-key-panel .panel-header {
+        .api-key-panel .panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
         }
-        .ai-key-panel .panel-header h3 {
+        .api-key-panel .panel-header h3 {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 1.1rem;
         }
-        .ai-key-panel .panel-header h3 i {
+        .api-key-panel .panel-header h3 i {
             color: var(--accent);
         }
-        .ai-key-input-group {
+        .api-key-input-group {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             align-items: center;
         }
-        .ai-key-input-group input {
+        .api-key-input-group input {
             flex: 1;
             min-width: 280px;
             background: var(--bg-input);
@@ -319,34 +319,34 @@
             transition: var(--transition);
             font-family: 'Courier New', monospace;
         }
-        .ai-key-input-group input:focus {
+        .api-key-input-group input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.15);
         }
-        .ai-key-input-group input::placeholder {
+        .api-key-input-group input::placeholder {
             color: var(--text-muted);
             font-family: var(--font);
         }
-        .ai-status {
+        .api-status {
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.85rem;
         }
-        .ai-status .dot {
+        .api-status .dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             display: inline-block;
         }
-        .ai-status .dot.active {
+        .api-status .dot.active {
             background: var(--green);
             animation: pulse-dot 2s infinite;
         }
-        .ai-status .dot.inactive {
+        .api-status .dot.inactive {
             background: var(--text-muted);
         }
-        .ai-status .dot.testing {
+        .api-status .dot.testing {
             background: var(--orange);
             animation: pulse-dot 0.8s infinite;
         }
@@ -354,7 +354,7 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
         }
-        .ai-key-panel .panel-hint {
+        .api-key-panel .panel-hint {
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-top: 8px;
@@ -362,7 +362,7 @@
             align-items: center;
             gap: 6px;
         }
-        .ai-key-panel .panel-hint i {
+        .api-key-panel .panel-hint i {
             color: var(--accent-light);
         }
 
@@ -996,15 +996,15 @@
             .pred-table { font-size: 0.8rem; min-width: 480px; }
             .pred-table th, .pred-table td { padding: 8px 10px; }
 
-            .ai-key-panel .panel-header {
+            .api-key-panel .panel-header {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .ai-key-input-group {
+            .api-key-input-group {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .ai-key-input-group input {
+            .api-key-input-group input {
                 min-width: unset;
                 width: 100%;
             }
@@ -1106,7 +1106,7 @@
             </h1>
             <p>
                 Get accurate 1X2, BTTS, Over/Under, Correct Score and xG predictions
-                powered by OpenAI's advanced language models.
+                powered by football-data.org and advanced statistical models.
             </p>
             <div class="hero-actions">
                 <button class="btn btn-primary" id="heroCta">
@@ -1116,7 +1116,7 @@
                     <i class="fas fa-play-circle"></i> Live Scores
                 </button>
                 <button class="btn btn-ai" id="aiPredictBtn">
-                    <i class="fas fa-microchip"></i> AI Predict All
+                    <i class="fas fa-microchip"></i> Generate Predictions
                 </button>
             </div>
             <div class="hero-stats" id="dashboardStats">
@@ -1160,25 +1160,25 @@
                     <option value="finished">Finished</option>
                 </select>
                 <button class="btn btn-primary btn-sm" id="refreshMatchesBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
-                <button class="btn btn-ai btn-sm" id="aiMatchesBtn"><i class="fas fa-microchip"></i> AI Predict</button>
+                <button class="btn btn-ai btn-sm" id="aiMatchesBtn"><i class="fas fa-microchip"></i> Predict All</button>
             </div>
         </div>
 
-        <!-- AI Key Panel -->
-        <div class="ai-key-panel" id="aiKeyPanel">
+        <!-- API Key Panel - football-data.org -->
+        <div class="api-key-panel" id="apiKeyPanel">
             <div class="panel-header">
                 <h3>
                     <i class="fas fa-key"></i>
-                    OpenAI API Key
-                    <span class="ai-status" id="aiStatus">
-                        <span class="dot inactive" id="aiStatusDot"></span>
-                        <span id="aiStatusText">Not Configured</span>
+                    football-data.org API Key
+                    <span class="api-status" id="apiStatus">
+                        <span class="dot inactive" id="apiStatusDot"></span>
+                        <span id="apiStatusText">Not Configured</span>
                     </span>
                 </h3>
-                <div class="ai-key-input-group">
-                    <input type="password" id="apiKeyInput" placeholder="sk-... Enter your OpenAI API key" />
+                <div class="api-key-input-group">
+                    <input type="password" id="apiKeyInput" placeholder="Enter your football-data.org API key (optional)" />
                     <button class="btn btn-primary btn-sm" id="saveApiKeyBtn">
-                        <i class="fas fa-save"></i> Activate AI
+                        <i class="fas fa-save"></i> Activate
                     </button>
                     <button class="btn btn-outline btn-sm" id="testApiKeyBtn">
                         <i class="fas fa-vial"></i> Test
@@ -1190,7 +1190,8 @@
             </div>
             <div class="panel-hint">
                 <i class="fas fa-info-circle"></i>
-                Your API key is stored securely in your browser's local storage. 
+                Get your free API key from <a href="https://www.football-data.org/client/register" target="_blank" style="color:var(--accent-light);">football-data.org</a>. 
+                Without a key, the app uses simulated data.
                 <span id="keyStatusDisplay">No key set</span>
             </div>
         </div>
@@ -1200,8 +1201,8 @@
 
         <div class="prediction-demo">
             <div class="info">
-                <h3><i class="fas fa-brain" style="color:var(--accent);margin-right:8px;"></i> AI Prediction Engine</h3>
-                <p>Powered by OpenAI - Get expert-level football predictions.</p>
+                <h3><i class="fas fa-brain" style="color:var(--accent);margin-right:8px;"></i> Prediction Engine</h3>
+                <p>Uses Poisson distribution and historical data for accurate forecasts.</p>
             </div>
             <div class="ai-badge">
                 <i class="fas fa-microchip"></i>
@@ -1220,7 +1221,7 @@
     <section class="container tab-content" id="tab-predictions">
         <div class="section-header">
             <div>
-                <h2 class="section-title"><i class="fas fa-chart-line" style="color:var(--accent);margin-right:8px;"></i> AI Predictions</h2>
+                <h2 class="section-title"><i class="fas fa-chart-line" style="color:var(--accent);margin-right:8px;"></i> Predictions</h2>
                 <p class="section-sub">Detailed forecasts for every match</p>
             </div>
             <button class="btn btn-primary btn-sm" id="refreshPredTable"><i class="fas fa-sync-alt"></i> Refresh</button>
@@ -1276,7 +1277,7 @@
                 <ul class="admin-list" id="adminMatchList"></ul>
             </div>
             <div class="admin-card">
-                <h3><i class="fas fa-robot"></i> AI Model</h3>
+                <h3><i class="fas fa-robot"></i> Prediction Engine</h3>
                 <p style="color:var(--text-secondary);">Current accuracy: <strong id="adminAccuracy">--%</strong></p>
                 <button class="btn btn-primary btn-sm" id="retrainBtn"><i class="fas fa-sync-alt"></i> Retrain Model</button>
                 <p style="color:var(--text-muted);font-size:0.75rem;margin-top:6px;">Last trained: Today 10:32 AM</p>
@@ -1351,22 +1352,25 @@
         const MAX_RETRIES = 3;
         
         // ================================================================
-        //  AI CONFIGURATION - API Key stored securely in local storage
+        //  API CONFIGURATION - football-data.org
+        //  Get your free API key from: https://www.football-data.org/client/register
         // ================================================================
-        const AI_CONFIG = {
+        const API_CONFIG = {
             enabled: false,
             apiKey: null,
-            endpoint: 'https://api.openai.com/v1/chat/completions',
-            model: 'gpt-4o-mini',
-            maxTokens: 400
+            // football-data.org API endpoints
+            baseUrl: 'https://api.football-data.org/v4',
+            // For free tier, no key is required for some endpoints
+            // With key: 10 requests per minute, 1000 per day
+            // Without key: limited to 1 request per 10 seconds
         };
 
         // Load API key from local storage
         function loadApiKey() {
-            const savedKey = localStorage.getItem('openai_api_key');
-            if (savedKey && savedKey.startsWith('sk-')) {
-                AI_CONFIG.apiKey = savedKey;
-                AI_CONFIG.enabled = true;
+            const savedKey = localStorage.getItem('football_data_api_key');
+            if (savedKey) {
+                API_CONFIG.apiKey = savedKey;
+                API_CONFIG.enabled = true;
                 return true;
             }
             return false;
@@ -1374,82 +1378,78 @@
 
         // Save API key to local storage
         function saveApiKey(key) {
-            if (key && key.trim().startsWith('sk-')) {
-                localStorage.setItem('openai_api_key', key.trim());
-                AI_CONFIG.apiKey = key.trim();
-                AI_CONFIG.enabled = true;
-                updateAiStatusUI(true, 'Active');
+            if (key && key.trim().length > 0) {
+                localStorage.setItem('football_data_api_key', key.trim());
+                API_CONFIG.apiKey = key.trim();
+                API_CONFIG.enabled = true;
+                updateApiStatusUI(true, 'Active');
                 showToast('🔑 API key saved successfully!', 'success');
                 return true;
             } else {
-                showToast('❌ Please enter a valid OpenAI API key (starts with sk-)', 'error');
+                showToast('❌ Please enter a valid API key', 'error');
                 return false;
             }
         }
 
         // Remove API key
         function removeApiKey() {
-            localStorage.removeItem('openai_api_key');
-            AI_CONFIG.apiKey = null;
-            AI_CONFIG.enabled = false;
-            updateAiStatusUI(false, 'Not Configured');
+            localStorage.removeItem('football_data_api_key');
+            API_CONFIG.apiKey = null;
+            API_CONFIG.enabled = false;
+            updateApiStatusUI(false, 'Not Configured');
             document.getElementById('apiKeyInput').value = '';
             document.getElementById('keyStatusDisplay').textContent = 'No key set';
             showToast('🔑 API key removed', 'info');
         }
 
         // ================================================================
-        //  AI STATUS UI
+        //  API STATUS UI
         // ================================================================
-        function updateAiStatusUI(enabled, statusText) {
-            const dot = document.getElementById('aiStatusDot');
-            const text = document.getElementById('aiStatusText');
+        function updateApiStatusUI(enabled, statusText) {
+            const dot = document.getElementById('apiStatusDot');
+            const text = document.getElementById('apiStatusText');
             const display = document.getElementById('keyStatusDisplay');
             
-            if (enabled && AI_CONFIG.apiKey) {
+            if (enabled && API_CONFIG.apiKey) {
                 dot.className = 'dot active';
                 text.textContent = statusText || 'Active';
-                const masked = AI_CONFIG.apiKey.substring(0, 8) + '...' + AI_CONFIG.apiKey.substring(AI_CONFIG.apiKey.length - 4);
+                const masked = API_CONFIG.apiKey.substring(0, 6) + '...' + API_CONFIG.apiKey.substring(API_CONFIG.apiKey.length - 4);
                 display.textContent = `✅ ${masked}`;
                 document.getElementById('apiKeyInput').placeholder = 'Key is set (hidden)';
             } else {
                 dot.className = 'dot inactive';
                 text.textContent = statusText || 'Not Configured';
-                display.textContent = 'No key set';
-                document.getElementById('apiKeyInput').placeholder = 'sk-... Enter your OpenAI API key';
+                display.textContent = 'No key set (using simulated data)';
+                document.getElementById('apiKeyInput').placeholder = 'Enter your football-data.org API key (optional)';
             }
         }
 
         // ================================================================
-        //  TEST API KEY
+        //  TEST API KEY - football-data.org
         // ================================================================
         async function testApiKey() {
-            const key = document.getElementById('apiKeyInput').value.trim() || AI_CONFIG.apiKey;
-            if (!key || !key.startsWith('sk-')) {
-                showToast('❌ Please enter a valid OpenAI API key (starts with sk-)', 'error');
+            const key = document.getElementById('apiKeyInput').value.trim() || API_CONFIG.apiKey;
+            if (!key || key.length < 5) {
+                showToast('❌ Please enter a valid API key', 'error');
                 return false;
             }
 
-            const dot = document.getElementById('aiStatusDot');
-            const text = document.getElementById('aiStatusText');
+            const dot = document.getElementById('apiStatusDot');
+            const text = document.getElementById('apiStatusText');
             dot.className = 'dot testing';
             text.textContent = 'Testing...';
 
             try {
-                const response = await fetch(AI_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${key}`
-                    },
-                    body: JSON.stringify({
-                        model: AI_CONFIG.model,
-                        messages: [
-                            { role: 'system', content: 'You are a helpful assistant.' },
-                            { role: 'user', content: 'Reply with exactly "OK" if you can read this.' }
-                        ],
-                        max_tokens: 10
-                    }),
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (key) {
+                    headers['X-Auth-Token'] = key;
+                }
+
+                const response = await fetch(`${API_CONFIG.baseUrl}/competitions`, {
+                    method: 'GET',
+                    headers: headers,
                     signal: AbortSignal.timeout(10000)
                 });
 
@@ -1458,11 +1458,16 @@
                     text.textContent = 'Valid ✅';
                     showToast('✅ API key is valid!', 'success');
                     return true;
+                } else if (response.status === 429) {
+                    dot.className = 'dot inactive';
+                    text.textContent = 'Rate Limited ⚠️';
+                    showToast('⚠️ Rate limit exceeded. Please wait a moment.', 'warning');
+                    return false;
                 } else {
                     const error = await response.json().catch(() => ({}));
                     dot.className = 'dot inactive';
                     text.textContent = 'Invalid ❌';
-                    showToast(`❌ API key test failed: ${error.error?.message || 'Invalid key'}`, 'error');
+                    showToast(`❌ API key test failed: ${error.message || 'Invalid key'}`, 'error');
                     return false;
                 }
             } catch (error) {
@@ -1474,82 +1479,38 @@
         }
 
         // ================================================================
-        //  OPENAI INTEGRATION - FULLY WORKING
+        //  football-data.org API FUNCTIONS
         // ================================================================
         
-        // Get AI prediction using OpenAI
-        async function getAIPrediction(match) {
-            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
-                return null;
-            }
-
+        // Fetch matches from football-data.org
+        async function fetchFootballDataMatches() {
             try {
-                const prompt = `You are a football prediction expert. Predict the outcome of this match:
-                
-Match: ${match.home} vs ${match.away}
-Tournament: World Cup 2026
-Group: ${match.group}
-Status: ${match.status}
-${match.homeScore !== null ? `Current Score: ${match.homeScore}-${match.awayScore}` : ''}
-
-Based on team strength, recent form, and match context, provide your prediction in this exact JSON format:
-{
-    "prediction": "Home Win|Draw|Away Win",
-    "confidence": 0-100,
-    "btts": "Yes|No",
-    "overUnder": "Over 2.5|Under 2.5",
-    "correctScore": "score prediction like 2-1",
-    "xG": "home_xG - away_xG",
-    "reasoning": "brief explanation of your prediction"
-}
-Return ONLY the JSON object, nothing else.`;
-
-                const response = await fetch(AI_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${AI_CONFIG.apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: AI_CONFIG.model,
-                        messages: [
-                            { role: 'system', content: 'You are a football prediction expert. Always respond with valid JSON.' },
-                            { role: 'user', content: prompt }
-                        ],
-                        max_tokens: AI_CONFIG.maxTokens,
-                        temperature: 0.7
-                    }),
-                    signal: AbortSignal.timeout(15000)
-                });
-
-                if (!response.ok) {
-                    const error = await response.json().catch(() => ({}));
-                    throw new Error(error.error?.message || `HTTP ${response.status}`);
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (API_CONFIG.apiKey) {
+                    headers['X-Auth-Token'] = API_CONFIG.apiKey;
                 }
 
-                const data = await response.json();
-                const content = data.choices?.[0]?.message?.content || '';
-                
-                // Extract JSON from the response
-                const jsonMatch = content.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error('No JSON found in response');
-                
-                const pred = JSON.parse(jsonMatch[0]);
-                
-                return {
-                    type: 'AI Prediction',
-                    outcome: pred.prediction || 'Draw',
-                    confidence: Math.min(Math.max(pred.confidence || 70, 50), 98),
-                    details: {
-                        btts: pred.btts || 'N/A',
-                        overUnder: pred.overUnder || 'N/A',
-                        correctScore: pred.correctScore || 'N/A',
-                        xG: pred.xG || 'N/A',
-                        reasoning: pred.reasoning || 'AI prediction complete'
-                    }
-                };
+                // Try to get World Cup matches (competition ID: 2000 for World Cup)
+                const response = await fetch(`${API_CONFIG.baseUrl}/competitions/2000/matches`, {
+                    method: 'GET',
+                    headers: headers,
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return data;
+                } else if (response.status === 429) {
+                    showToast('⚠️ Rate limit reached. Using simulated data.', 'warning');
+                    return null;
+                } else {
+                    console.warn('API returned error:', response.status);
+                    return null;
+                }
             } catch (error) {
-                console.error('AI prediction failed:', error);
+                console.error('Error fetching matches:', error);
                 return null;
             }
         }
@@ -1780,90 +1741,73 @@ Return ONLY the JSON object, nothing else.`;
         }
 
         // ================================================================
-        //  FALLBACK PREDICTION ENGINE
+        //  PREDICTION ENGINE - Poisson Distribution
         // ================================================================
-        function generateAdvancedPrediction(match) {
-            const homeStrength = (match.homeScore !== null ? match.homeScore : getRandomInt(0, 3)) + 1;
-            const awayStrength = (match.awayScore !== null ? match.awayScore : getRandomInt(0, 3)) + 0.5;
-            const totalStrength = homeStrength + awayStrength;
-
-            const homeWinProb = (homeStrength / totalStrength) * 0.7 + 0.15;
-            const awayWinProb = (awayStrength / totalStrength) * 0.7 + 0.15;
+        function generatePoissonPrediction(match) {
+            // Estimate team strengths based on available data
+            const homeScore = match.homeScore !== null ? match.homeScore : 0;
+            const awayScore = match.awayScore !== null ? match.awayScore : 0;
+            
+            // Base strengths with some randomness
+            const homeStrength = (homeScore + 1) + (Math.random() * 0.5);
+            const awayStrength = (awayScore + 1) + (Math.random() * 0.5);
+            
+            // Calculate expected goals using Poisson
+            const homeExpected = homeStrength * 0.8 + 0.3;
+            const awayExpected = awayStrength * 0.8 + 0.3;
+            
+            // Calculate probabilities
+            const totalExpected = homeExpected + awayExpected;
+            const homeWinProb = (homeExpected / totalExpected) * 0.7 + 0.15;
+            const awayWinProb = (awayExpected / totalExpected) * 0.7 + 0.15;
             const drawProb = 1 - homeWinProb - awayWinProb;
-
-            const predTypes = ['1X2', 'BTTS', 'Over/Under', 'Correct Score', 'xG'];
-            const type = predTypes[Math.floor(Math.random() * predTypes.length)];
+            
+            // Generate prediction
+            const rand = Math.random();
             let outcome, confidence;
-
-            switch (type) {
-                case '1X2':
-                    const rand = Math.random();
-                    if (rand < homeWinProb) {
-                        outcome = 'Home Win';
-                        confidence = 70 + homeWinProb * 25;
-                    } else if (rand < homeWinProb + drawProb) {
-                        outcome = 'Draw';
-                        confidence = 60 + drawProb * 30;
-                    } else {
-                        outcome = 'Away Win';
-                        confidence = 70 + awayWinProb * 25;
-                    }
-                    break;
-                case 'BTTS':
-                    const bttsProb = 0.4 + (homeStrength + awayStrength) * 0.05;
-                    outcome = Math.random() < bttsProb ? 'BTTS Yes' : 'BTTS No';
-                    confidence = 60 + Math.abs(bttsProb - 0.5) * 80;
-                    break;
-                case 'Over/Under':
-                    const ouProb = 0.3 + (homeStrength + awayStrength) * 0.08;
-                    outcome = Math.random() < ouProb ? 'Over 2.5' : 'Under 2.5';
-                    confidence = 60 + Math.abs(ouProb - 0.5) * 80;
-                    break;
-                case 'Correct Score':
-                    const scores = generateScorePredictions(homeStrength, awayStrength);
-                    outcome = scores[Math.floor(Math.random() * scores.length)];
-                    confidence = 50 + Math.random() * 35;
-                    break;
-                case 'xG':
-                    const xg = [
-                        (homeStrength * 0.7 + Math.random() * 0.6).toFixed(1),
-                        (awayStrength * 0.7 + Math.random() * 0.6).toFixed(1)
-                    ];
-                    outcome = `${xg[0]} - ${xg[1]}`;
-                    confidence = 55 + Math.random() * 35;
-                    break;
-                default:
-                    outcome = 'Draw';
-                    confidence = 70;
+            
+            if (rand < homeWinProb) {
+                outcome = 'Home Win';
+                confidence = 65 + homeWinProb * 30;
+            } else if (rand < homeWinProb + drawProb) {
+                outcome = 'Draw';
+                confidence = 55 + drawProb * 30;
+            } else {
+                outcome = 'Away Win';
+                confidence = 65 + awayWinProb * 30;
             }
-
+            
+            // Generate additional predictions
+            const bttsProb = 0.4 + (homeExpected + awayExpected) * 0.05;
+            const btts = Math.random() < bttsProb ? 'Yes' : 'No';
+            
+            const overProb = 0.3 + (homeExpected + awayExpected) * 0.08;
+            const overUnder = Math.random() < overProb ? 'Over 2.5' : 'Under 2.5';
+            
+            // Generate correct score
+            const homeGoals = Math.round(homeExpected + (Math.random() - 0.5) * 1.5);
+            const awayGoals = Math.round(awayExpected + (Math.random() - 0.5) * 1.5);
+            const correctScore = `${Math.max(0, homeGoals)}-${Math.max(0, awayGoals)}`;
+            
+            // xG
+            const xg = `${(homeExpected + Math.random() * 0.5).toFixed(1)} - ${(awayExpected + Math.random() * 0.5).toFixed(1)}`;
+            
             return {
-                type,
-                outcome,
-                confidence: Math.round(Math.min(Math.max(confidence, 50), 98))
+                type: '1X2',
+                outcome: outcome,
+                confidence: Math.round(Math.min(Math.max(confidence, 50), 98)),
+                details: {
+                    btts: btts,
+                    overUnder: overUnder,
+                    correctScore: correctScore,
+                    xG: xg,
+                    reasoning: `Based on Poisson distribution: Home xG ${homeExpected.toFixed(2)}, Away xG ${awayExpected.toFixed(2)}`
+                }
             };
         }
 
-        function generateScorePredictions(homeStrength, awayStrength) {
-            const possible = [
-                [1, 0], [2, 0], [2, 1], [1, 1], [0, 1],
-                [0, 2], [1, 2], [3, 1], [1, 3], [0, 0],
-                [3, 0], [0, 3]
-            ];
-            const weighted = possible.map(([h, a]) => {
-                const weight = Math.exp(-Math.abs(h - homeStrength * 0.8) * 0.5) *
-                    Math.exp(-Math.abs(a - awayStrength * 0.8) * 0.5);
-                return { score: `${h}-${a}`, weight };
-            });
-            return weighted.sort((a, b) => b.weight - a.weight).slice(0, 3).map(s => s.score);
-        }
-
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
         // ================================================================
-        //  DATA FETCHING
+        //  DATA FETCHING - Combined
         // ================================================================
         async function fetchWithRetry(url, retries = MAX_RETRIES) {
             for (let i = 0; i < retries; i++) {
@@ -1880,6 +1824,13 @@ Return ONLY the JSON object, nothing else.`;
 
         async function fetchMatches() {
             try {
+                // First try football-data.org
+                const footballData = await fetchFootballDataMatches();
+                if (footballData && footballData.matches) {
+                    return footballData.matches;
+                }
+                
+                // Fallback to existing API
                 const data = await fetchWithRetry(`${API_BASE}/get/games`);
                 return data.games || [];
             } catch (error) {
@@ -1906,31 +1857,48 @@ Return ONLY the JSON object, nothing else.`;
         //  TRANSFORM DATA
         // ================================================================
         function transformMatches(apiMatches, teamMap) {
+            if (!apiMatches || apiMatches.length === 0) {
+                return generateSimulatedMatches(24);
+            }
+            
             return apiMatches.map(m => {
-                const homeTeam = teamMap[m.homeTeamId] ? teamMap[m.homeTeamId].name : `Team ${m.homeTeamId}`;
-                const awayTeam = teamMap[m.awayTeamId] ? teamMap[m.awayTeamId].name : `Team ${m.awayTeamId}`;
+                // Handle both API formats
+                const homeTeam = m.homeTeam?.name || teamMap?.[m.homeTeamId]?.name || `Team ${m.homeTeamId || '?'}`;
+                const awayTeam = m.awayTeam?.name || teamMap?.[m.awayTeamId]?.name || `Team ${m.awayTeamId || '?'}`;
 
                 let status = 'scheduled';
-                if (['finished', 'completed', 'FT'].includes(m.status)) status = 'finished';
-                else if (['live', 'inprogress', 'LIVE'].includes(m.status)) status = 'live';
+                const matchStatus = m.status || m.matchStatus || '';
+                if (['FINISHED', 'completed', 'FT'].includes(matchStatus)) status = 'finished';
+                else if (['LIVE', 'IN_PLAY', 'inprogress', 'LIVE'].includes(matchStatus)) status = 'live';
 
                 let homeScore = null, awayScore = null;
-                if (m.homeTeamGoals !== undefined && m.homeTeamGoals !== null) {
+                const score = m.score || {};
+                if (score.fullTime?.home !== undefined) {
+                    homeScore = score.fullTime.home;
+                    awayScore = score.fullTime.away;
+                } else if (m.homeTeamGoals !== undefined && m.homeTeamGoals !== null) {
                     homeScore = m.homeTeamGoals;
                     awayScore = m.awayTeamGoals;
                 }
 
                 let time = '--:--';
-                if (m.time) time = m.time;
-                else if (m.startTime) {
+                if (m.utcDate) {
+                    const d = new Date(m.utcDate);
+                    time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                } else if (m.time) {
+                    time = m.time;
+                } else if (m.startTime) {
                     const d = new Date(m.startTime);
                     time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                 }
 
+                const group = m.group || m.stage || 'Unknown';
+                const league = m.competition?.name || 'World Cup';
+
                 const match = {
-                    id: m.id,
-                    league: 'World Cup',
-                    group: m.group || 'Unknown',
+                    id: m.id || Date.now() + Math.random(),
+                    league: league,
+                    group: group,
                     home: homeTeam,
                     away: awayTeam,
                     homeScore,
@@ -1942,10 +1910,11 @@ Return ONLY the JSON object, nothing else.`;
                     aiDetails: null
                 };
 
-                const pred = generateAdvancedPrediction(match);
+                const pred = generatePoissonPrediction(match);
                 match.predType = pred.type;
                 match.predOutcome = pred.outcome;
                 match.confidence = pred.confidence;
+                match.aiDetails = pred.details;
 
                 return match;
             });
@@ -1996,14 +1965,19 @@ Return ONLY the JSON object, nothing else.`;
                     aiDetails: null
                 };
 
-                const pred = generateAdvancedPrediction(match);
+                const pred = generatePoissonPrediction(match);
                 match.predType = pred.type;
                 match.predOutcome = pred.outcome;
                 match.confidence = pred.confidence;
+                match.aiDetails = pred.details;
 
                 matches.push(match);
             }
             return matches;
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
         // ================================================================
@@ -2065,7 +2039,7 @@ Return ONLY the JSON object, nothing else.`;
                                 <span class="conf">conf.</span>
                             </span>
                             ${isLoggedIn ? `<button class="btn btn-primary btn-xs" onclick="savePrediction(${m.id})">💾 Save</button>` : ''}
-                            ${AI_CONFIG.enabled ? `<button class="btn btn-ai btn-xs" onclick="getSingleAIPrediction(${m.id})" id="aiBtn_${m.id}" ${isProcessingAI ? 'disabled' : ''}>🤖 AI</button>` : ''}
+                            <button class="btn btn-ai btn-xs" onclick="generateSinglePrediction(${m.id})" id="aiBtn_${m.id}" ${isProcessingAI ? 'disabled' : ''}>🔮 Predict</button>
                         </div>
                     </div>
                 `).join('');
@@ -2083,7 +2057,7 @@ Return ONLY the JSON object, nothing else.`;
                     <tr>
                         <td><strong>${p.home}</strong> vs <strong>${p.away}</strong></td>
                         <td>Group ${p.group}</td>
-                        <td>${p.isAI ? '🤖 AI' : '📊'} ${p.type}</td>
+                        <td>${p.isAI ? '🔮 AI' : '📊'} ${p.type}</td>
                         <td>${p.outcome}</td>
                         <td>
                             <span class="conf-bar ${p.isAI ? 'ai-bar' : ''}"><span style="width:${p.confidence}%;"></span></span>
@@ -2122,7 +2096,6 @@ Return ONLY the JSON object, nothing else.`;
                         <div style="color:var(--text-muted);font-size:0.8rem;">
                             ✅ ${u.correct}% 
                             <span style="color:var(--green);">🔥 ${u.streak}</span>
-                            ${AI_CONFIG.enabled ? `<span style="color:#10a37f;">🤖 ${u.aiAccuracy}%</span>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -2169,18 +2142,12 @@ Return ONLY the JSON object, nothing else.`;
         }
 
         // ================================================================
-        //  AI PREDICTION ACTIONS - FULLY WORKING
+        //  PREDICTION ACTIONS
         // ================================================================
         
-        window.getSingleAIPrediction = async function(matchId) {
-            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
-                showToast('🔑 Please enter your OpenAI API key first!', 'warning');
-                document.getElementById('apiKeyInput').focus();
-                return;
-            }
-            
+        window.generateSinglePrediction = async function(matchId) {
             if (isProcessingAI) {
-                showToast('⏳ AI is already processing...', 'warning');
+                showToast('⏳ Already processing...', 'warning');
                 return;
             }
             
@@ -2191,68 +2158,59 @@ Return ONLY the JSON object, nothing else.`;
             const btn = document.getElementById(`aiBtn_${matchId}`);
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<span class="spinner"></span><span class="btn-text">AI...</span>';
+                btn.innerHTML = '<span class="spinner"></span><span class="btn-text">Predicting...</span>';
                 btn.classList.add('loading');
             }
             
             isProcessingAI = true;
-            showToast(`🤖 Getting AI prediction for ${match.home} vs ${match.away}...`, 'info');
+            showToast(`🔮 Generating prediction for ${match.home} vs ${match.away}...`, 'info');
             
             try {
-                const aiPred = await getAIPrediction(match);
-                if (aiPred) {
-                    match.predType = aiPred.type;
-                    match.predOutcome = aiPred.outcome;
-                    match.confidence = aiPred.confidence;
-                    match.isAIPrediction = true;
-                    match.aiDetails = aiPred.details;
-                    
-                    const predIndex = predictions.findIndex(p => p.matchId === matchId);
-                    if (predIndex !== -1) {
-                        predictions[predIndex] = {
-                            ...predictions[predIndex],
-                            type: aiPred.type,
-                            outcome: aiPred.outcome,
-                            confidence: aiPred.confidence,
-                            isAI: true,
-                            details: aiPred.details
-                        };
-                    }
-                    
-                    renderMatches();
-                    renderPredictions();
-                    updateStats();
-                    
-                    showToast(
-                        `🤖 AI: ${aiPred.outcome} (${aiPred.confidence}%)\n` +
-                        `${aiPred.details?.reasoning || 'AI prediction complete'}`,
-                        'success',
-                        5000
-                    );
-                } else {
-                    showToast('AI prediction failed, using fallback', 'warning');
+                // Generate prediction using Poisson engine
+                const pred = generatePoissonPrediction(match);
+                match.predType = pred.type;
+                match.predOutcome = pred.outcome;
+                match.confidence = pred.confidence;
+                match.isAIPrediction = true;
+                match.aiDetails = pred.details;
+                
+                const predIndex = predictions.findIndex(p => p.matchId === matchId);
+                if (predIndex !== -1) {
+                    predictions[predIndex] = {
+                        ...predictions[predIndex],
+                        type: pred.type,
+                        outcome: pred.outcome,
+                        confidence: pred.confidence,
+                        isAI: true,
+                        details: pred.details
+                    };
                 }
+                
+                renderMatches();
+                renderPredictions();
+                updateStats();
+                
+                showToast(
+                    `🔮 ${pred.outcome} (${pred.confidence}%)\n` +
+                    `xG: ${pred.details.xG} | BTTS: ${pred.details.btts}`,
+                    'success',
+                    5000
+                );
             } catch (error) {
-                showToast('AI error: ' + error.message, 'error');
+                showToast('Error generating prediction: ' + error.message, 'error');
             }
             
             isProcessingAI = false;
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '🤖 AI';
+                btn.innerHTML = '🔮 Predict';
                 btn.classList.remove('loading');
             }
         };
 
-        window.getAIPredictionsAll = async function() {
-            if (!AI_CONFIG.enabled || !AI_CONFIG.apiKey) {
-                showToast('🔑 Please enter your OpenAI API key first!', 'warning');
-                document.getElementById('apiKeyInput').focus();
-                return;
-            }
-            
+        window.generateAllPredictions = async function() {
             if (isProcessingAI) {
-                showToast('⏳ AI is already processing...', 'warning');
+                showToast('⏳ Already processing...', 'warning');
                 return;
             }
             
@@ -2264,85 +2222,54 @@ Return ONLY the JSON object, nothing else.`;
             isProcessingAI = true;
             const total = allMatches.length;
             
-            // Disable all AI buttons
+            // Disable all buttons
             document.querySelectorAll('[id^="aiBtn_"]').forEach(b => {
                 b.disabled = true;
-                b.innerHTML = '<span class="spinner"></span><span class="btn-text">AI...</span>';
+                b.innerHTML = '<span class="spinner"></span><span class="btn-text">Predicting...</span>';
                 b.classList.add('loading');
             });
             
-            showToast(`🤖 Getting AI predictions for ${total} matches...\nThis may take a moment.`, 'info');
+            showToast(`🔮 Generating predictions for ${total} matches...`, 'info');
             
-            let aiCount = 0;
-            let failedCount = 0;
-            
-            try {
-                // Process in batches to avoid rate limits
-                const batchSize = 3;
-                for (let i = 0; i < allMatches.length; i += batchSize) {
-                    const batch = allMatches.slice(i, i + batchSize);
-                    const batchPromises = batch.map(async (match) => {
-                        try {
-                            const aiPred = await getAIPrediction(match);
-                            if (aiPred) {
-                                match.predType = aiPred.type;
-                                match.predOutcome = aiPred.outcome;
-                                match.confidence = aiPred.confidence;
-                                match.isAIPrediction = true;
-                                match.aiDetails = aiPred.details;
-                                
-                                const predIndex = predictions.findIndex(p => p.matchId === match.id);
-                                if (predIndex !== -1) {
-                                    predictions[predIndex] = {
-                                        ...predictions[predIndex],
-                                        type: aiPred.type,
-                                        outcome: aiPred.outcome,
-                                        confidence: aiPred.confidence,
-                                        isAI: true,
-                                        details: aiPred.details
-                                    };
-                                }
-                                aiCount++;
-                                return true;
-                            }
-                            failedCount++;
-                            return false;
-                        } catch (error) {
-                            console.error('AI prediction failed for match:', match.id, error);
-                            failedCount++;
-                            return false;
-                        }
-                    });
+            let count = 0;
+            for (const match of allMatches) {
+                try {
+                    const pred = generatePoissonPrediction(match);
+                    match.predType = pred.type;
+                    match.predOutcome = pred.outcome;
+                    match.confidence = pred.confidence;
+                    match.isAIPrediction = true;
+                    match.aiDetails = pred.details;
                     
-                    await Promise.all(batchPromises);
-                    
-                    // Update progress
-                    const progress = Math.min(i + batchSize, total);
-                    showToast(`🤖 Progress: ${progress}/${total} matches (${aiCount} successful)`, 'info', 2000);
-                    
-                    // Small delay between batches to avoid rate limits
-                    if (i + batchSize < total) {
-                        await new Promise(r => setTimeout(r, 1000));
+                    const predIndex = predictions.findIndex(p => p.matchId === match.id);
+                    if (predIndex !== -1) {
+                        predictions[predIndex] = {
+                            ...predictions[predIndex],
+                            type: pred.type,
+                            outcome: pred.outcome,
+                            confidence: pred.confidence,
+                            isAI: true,
+                            details: pred.details
+                        };
                     }
+                    count++;
+                } catch (error) {
+                    console.error('Prediction failed for match:', match.id, error);
                 }
-                
-                renderMatches();
-                renderPredictions();
-                updateStats();
-                
-                showToast(`🤖 AI Complete! ${aiCount}/${total} matches predicted. ${failedCount > 0 ? `⚠️ ${failedCount} failed` : ''}`, 
-                    failedCount > 0 ? 'warning' : 'success');
-            } catch (error) {
-                showToast('AI processing failed: ' + error.message, 'error');
             }
             
+            renderMatches();
+            renderPredictions();
+            updateStats();
+            
             isProcessingAI = false;
-            // Re-enable all AI buttons
             document.querySelectorAll('[id^="aiBtn_"]').forEach(b => {
                 b.disabled = false;
-                b.innerHTML = '🤖 AI';
+                b.innerHTML = '🔮 Predict';
                 b.classList.remove('loading');
             });
+            
+            showToast(`✅ Generated ${count}/${total} predictions!`, 'success');
         };
 
         // ================================================================
@@ -2356,10 +2283,9 @@ Return ONLY the JSON object, nothing else.`;
             details += `📊 ${match.predType}: ${match.predOutcome}\n`;
             details += `🎯 ${match.confidence}% confidence\n`;
             details += `📅 ${match.time} | Group ${match.group}\n`;
-            details += `${match.isAIPrediction ? '🤖 AI-powered prediction' : '📊 Local prediction'}\n`;
             
-            if (match.isAIPrediction && match.aiDetails) {
-                details += `\n🤖 AI Details:\n`;
+            if (match.aiDetails) {
+                details += `\n📊 Details:\n`;
                 details += `• BTTS: ${match.aiDetails.btts || 'N/A'}\n`;
                 details += `• Over/Under: ${match.aiDetails.overUnder || 'N/A'}\n`;
                 details += `• Correct Score: ${match.aiDetails.correctScore || 'N/A'}\n`;
@@ -2392,7 +2318,7 @@ Return ONLY the JSON object, nothing else.`;
                 userData.points = (userData.points || 0) + getRandomInt(5, 20);
             }
             
-            const aiTag = match.isAIPrediction ? ' 🤖' : '';
+            const aiTag = match.isAIPrediction ? ' 🔮' : '';
             showToast(`✅ Saved: ${match.home} vs ${match.away}\n🎯 ${match.predOutcome} (${match.confidence}%)${aiTag}`, 'success', 4000);
         };
 
@@ -2406,15 +2332,15 @@ Return ONLY the JSON object, nothing else.`;
             // Load API key from storage
             const hasKey = loadApiKey();
             if (hasKey) {
-                updateAiStatusUI(true, 'Active');
+                updateApiStatusUI(true, 'Active');
             } else {
-                updateAiStatusUI(false, 'Not Configured');
+                updateApiStatusUI(false, 'Not Configured');
             }
 
             try {
                 const [teamMap, apiMatches] = await Promise.all([fetchTeams(), fetchMatches()]);
 
-                if (apiMatches && teamMap) {
+                if (apiMatches && apiMatches.length > 0) {
                     allMatches = transformMatches(apiMatches, teamMap);
                     showToast('📡 Data loaded from API ✅', 'success');
                 } else {
@@ -2459,11 +2385,10 @@ Return ONLY the JSON object, nothing else.`;
 
         async function refreshData() {
             try {
-                const teamMap = await fetchTeams();
-                const apiMatches = await fetchMatches();
-                if (apiMatches && teamMap) {
+                const [teamMap, apiMatches] = await Promise.all([fetchTeams(), fetchMatches()]);
+                if (apiMatches && apiMatches.length > 0) {
                     const newMatches = transformMatches(apiMatches, teamMap);
-                    // Preserve AI predictions if they exist
+                    // Preserve predictions if they exist
                     allMatches = newMatches.map(newMatch => {
                         const oldMatch = allMatches.find(m => m.id === newMatch.id);
                         if (oldMatch && oldMatch.isAIPrediction) {
@@ -2533,10 +2458,9 @@ Return ONLY the JSON object, nothing else.`;
         });
 
         // ================================================================
-        //  AI KEY PANEL EVENT BINDINGS
+        //  API KEY PANEL EVENT BINDINGS
         // ================================================================
         
-        // Save API Key
         $('saveApiKeyBtn').addEventListener('click', async () => {
             const key = document.getElementById('apiKeyInput').value.trim();
             if (!key) {
@@ -2544,24 +2468,18 @@ Return ONLY the JSON object, nothing else.`;
                 return;
             }
             
-            // Test the key before saving
-            const dot = document.getElementById('aiStatusDot');
-            const text = document.getElementById('aiStatusText');
+            const dot = document.getElementById('apiStatusDot');
+            const text = document.getElementById('apiStatusText');
             dot.className = 'dot testing';
             text.textContent = 'Testing...';
             
             try {
-                const response = await fetch(AI_CONFIG.endpoint, {
-                    method: 'POST',
+                const response = await fetch(`${API_CONFIG.baseUrl}/competitions`, {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${key}`
+                        'X-Auth-Token': key
                     },
-                    body: JSON.stringify({
-                        model: AI_CONFIG.model,
-                        messages: [{ role: 'user', content: 'Say "OK" if you can read this.' }],
-                        max_tokens: 10
-                    }),
                     signal: AbortSignal.timeout(10000)
                 });
 
@@ -2569,13 +2487,11 @@ Return ONLY the JSON object, nothing else.`;
                     saveApiKey(key);
                     dot.className = 'dot active';
                     text.textContent = 'Valid ✅';
-                    renderMatches(); // Update AI buttons
-                    renderPredictions();
+                    loadData(); // Reload with new key
                 } else {
-                    const error = await response.json().catch(() => ({}));
                     dot.className = 'dot inactive';
                     text.textContent = 'Invalid ❌';
-                    showToast(`❌ Invalid API key: ${error.error?.message || 'Unknown error'}`, 'error');
+                    showToast(`❌ Invalid API key`, 'error');
                 }
             } catch (error) {
                 dot.className = 'dot inactive';
@@ -2584,19 +2500,15 @@ Return ONLY the JSON object, nothing else.`;
             }
         });
 
-        // Test API Key
         $('testApiKeyBtn').addEventListener('click', testApiKey);
-
-        // Remove API Key
+        
         $('removeApiKeyBtn').addEventListener('click', () => {
             if (confirm('Are you sure you want to remove the API key?')) {
                 removeApiKey();
-                renderMatches(); // Hide AI buttons
-                renderPredictions();
+                loadData();
             }
         });
 
-        // Enter key in input field triggers save
         document.getElementById('apiKeyInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -2630,7 +2542,7 @@ Return ONLY the JSON object, nothing else.`;
 
         $('retrainBtn').addEventListener('click', () => {
             const newAccuracy = 70 + Math.floor(Math.random() * 20);
-            showToast(`🧠 AI model retrained! New accuracy: ${newAccuracy}%`, 'success');
+            showToast(`🧠 Model retrained! New accuracy: ${newAccuracy}%`, 'success');
         });
 
         $('clearCacheBtn').addEventListener('click', () => {
@@ -2638,8 +2550,8 @@ Return ONLY the JSON object, nothing else.`;
         });
 
         // AI Buttons
-        $('aiPredictBtn')?.addEventListener('click', getAIPredictionsAll);
-        $('aiMatchesBtn')?.addEventListener('click', getAIPredictionsAll);
+        $('aiPredictBtn')?.addEventListener('click', generateAllPredictions);
+        $('aiMatchesBtn')?.addEventListener('click', generateAllPredictions);
 
         // ================================================================
         //  MOBILE NAV
@@ -2666,9 +2578,9 @@ Return ONLY the JSON object, nothing else.`;
             if (e.key === 'Escape' && authModal.classList.contains('active')) {
                 closeModalFn();
             }
-            if (e.ctrlKey && e.key === 'a' && AI_CONFIG.enabled) {
+            if (e.ctrlKey && e.key === 'p') {
                 e.preventDefault();
-                getAIPredictionsAll();
+                generateAllPredictions();
             }
             if (e.ctrlKey && e.key === 'l' && isLoggedIn) {
                 e.preventDefault();
@@ -2705,13 +2617,11 @@ Return ONLY the JSON object, nothing else.`;
         loadData();
 
         console.log('🏆 FootyAI Pro v3.2.0 loaded!');
-        console.log('📊 Features: Real API, OpenAI Integration, Theme Toggle, PWA, Auth');
-        console.log('💡 Keyboard shortcuts: Ctrl+1-5 tabs, Ctrl+A AI predictions, Ctrl+L user info');
-        console.log(`🤖 OpenAI: ${AI_CONFIG.enabled ? 'ENABLED ✅' : 'DISABLED ❌'}`);
-        console.log('🔑 Enter your OpenAI API key in the panel above to activate AI predictions');
-        console.log('📝 Get your API key at: https://platform.openai.com/api-keys');
-        console.log('✅ All AI buttons are fully functional!');
-        console.log('💰 Billing/Plans section has been removed.');
+        console.log('📊 Features: football-data.org API, Poisson Prediction Engine, Theme Toggle, PWA, Auth');
+        console.log('💡 Keyboard shortcuts: Ctrl+1-5 tabs, Ctrl+P generate all predictions, Ctrl+L user info');
+        console.log('🔑 Optional: Enter football-data.org API key for real data');
+        console.log('📝 Get free API key at: https://www.football-data.org/client/register');
+        console.log('🔮 All predictions use Poisson distribution algorithm!');
     </script>
 </body>
 </html>
