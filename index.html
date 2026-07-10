@@ -365,14 +365,6 @@
         .ai-key-panel .panel-hint i {
             color: var(--accent-light);
         }
-        .key-masked {
-            font-family: 'Courier New', monospace;
-            color: var(--accent-light);
-            background: rgba(124, 92, 252, 0.08);
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
 
         /* ================================================================
            HERO
@@ -782,82 +774,6 @@
         }
 
         /* ================================================================
-           PLANS
-           ================================================================ */
-        .plans-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin: 24px 0 40px;
-        }
-        .plan-card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 24px 20px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            transition: var(--transition);
-            position: relative;
-        }
-        .plan-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: var(--shadow);
-        }
-        .plan-card.popular {
-            border-color: var(--accent);
-            background: var(--bg-card-hover);
-        }
-        .plan-card.popular::before {
-            content: 'Most Popular';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            padding: 2px 16px;
-            border-radius: 50px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .plan-card .plan-name { font-size: 1.2rem; font-weight: 700; }
-        .plan-card .plan-price {
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 8px 0 2px;
-        }
-        .plan-card .plan-price small {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: var(--text-muted);
-        }
-        .plan-card .plan-desc {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-        }
-        .plan-card .plan-features {
-            list-style: none;
-            text-align: left;
-            margin: 12px 0 18px;
-            font-size: 0.85rem;
-        }
-        .plan-card .plan-features li {
-            padding: 4px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-secondary);
-        }
-        .plan-card .plan-features li i {
-            color: var(--green);
-            width: 16px;
-        }
-        .plan-card .btn { width: 100%; justify-content: center; }
-
-        /* ================================================================
            AUTH MODAL
            ================================================================ */
         .modal-overlay {
@@ -1071,7 +987,6 @@
             .filters select { width: 100%; }
             
             .admin-panel { grid-template-columns: 1fr; }
-            .plans-grid { grid-template-columns: 1fr; }
             .prediction-demo { flex-direction: column; text-align: center; }
             
             .modal { padding: 24px 16px; }
@@ -1373,19 +1288,6 @@
                 <button class="btn btn-danger btn-sm" id="clearCacheBtn"><i class="fas fa-trash"></i> Clear Cache</button>
             </div>
         </div>
-    </section>
-
-    <!-- ================================================================
-    PLANS
-    ================================================================ -->
-    <section class="container">
-        <div class="text-center" style="margin-bottom:4px;">
-            <h2 class="section-title">Choose Your Plan</h2>
-            <p class="section-sub" style="max-width:500px;margin:0 auto 4px;">
-                Unlock premium predictions and advanced stats.
-            </p>
-        </div>
-        <div class="plans-grid" id="plansGrid"></div>
     </section>
 
     <!-- ================================================================
@@ -1775,8 +1677,7 @@ Return ONLY the JSON object, nothing else.`;
                     points: Math.floor(Math.random() * 500),
                     correctPredictions: Math.floor(Math.random() * 50),
                     totalPredictions: Math.floor(Math.random() * 100),
-                    streak: Math.floor(Math.random() * 10),
-                    plan: ['free', 'premium', 'pro'][Math.floor(Math.random() * 3)]
+                    streak: Math.floor(Math.random() * 10)
                 };
                 showToast(isLogin ? `Welcome back, ${currentUser.displayName}!` :
                     `Account created successfully! 🎉`, 'success');
@@ -1815,8 +1716,7 @@ Return ONLY the JSON object, nothing else.`;
                     points: Math.floor(Math.random() * 500),
                     correctPredictions: Math.floor(Math.random() * 50),
                     totalPredictions: Math.floor(Math.random() * 100),
-                    streak: Math.floor(Math.random() * 10),
-                    plan: 'free'
+                    streak: Math.floor(Math.random() * 10)
                 };
                 updateAuthUI(true);
                 closeModalFn();
@@ -1840,13 +1740,11 @@ Return ONLY the JSON object, nothing else.`;
                 loginBtn.textContent = displayName;
                 loginBtn.className = 'btn btn-success btn-sm';
                 loginBtn.onclick = () => {
-                    const planEmoji = userData?.plan === 'premium' ? '⭐' : userData?.plan === 'pro' ? '💎' : '🆓';
                     showToast(
                         `👤 ${displayName}\n` +
                         `📊 Points: ${userData?.points || 0}\n` +
                         `🎯 Correct: ${userData?.correctPredictions || 0}/${userData?.totalPredictions || 0}\n` +
-                        `🔥 Streak: ${userData?.streak || 0}\n` +
-                        `${planEmoji} Plan: ${userData?.plan || 'free'}`,
+                        `🔥 Streak: ${userData?.streak || 0}`,
                         'info',
                         5000
                     );
@@ -2257,46 +2155,6 @@ Return ONLY the JSON object, nothing else.`;
                 `).join('');
         }
 
-        function renderPlans() {
-            const plans = [{
-                name: 'Free',
-                price: '$0',
-                desc: 'Basic predictions & stats',
-                features: ['5 predictions / day', '1 league', 'Basic stats', 'Community access'],
-                popular: false
-            }, {
-                name: 'Premium',
-                price: '$19',
-                desc: 'Full access for serious bettors',
-                features: ['Unlimited predictions', 'All leagues', 'xG & advanced stats',
-                    'Live match center', 'Email support', 'Custom alerts', 'AI-powered predictions'
-                ],
-                popular: true
-            }, {
-                name: 'Pro',
-                price: '$49',
-                desc: 'For professionals & syndicates',
-                features: ['Everything in Premium', 'API access', 'Custom models',
-                    'Priority support', 'White‑label reports', 'Team analytics', 'OpenAI integration'
-                ],
-                popular: false
-            }];
-            const grid = $('plansGrid');
-            grid.innerHTML = plans.map(p => `
-                    <div class="plan-card ${p.popular ? 'popular' : ''}">
-                        <div class="plan-name">${p.name}</div>
-                        <div class="plan-price">${p.price} <small>/mo</small></div>
-                        <div class="plan-desc">${p.desc}</div>
-                        <ul class="plan-features">
-                            ${p.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('')}
-                        </ul>
-                        <button class="btn ${p.popular ? 'btn-primary' : 'btn-outline'}" onclick="selectPlan('${p.name}')">
-                            ${p.popular ? 'Get Started' : 'Choose Plan'}
-                        </button>
-                    </div>
-                `).join('');
-        }
-
         function updateStats() {
             const total = allMatches.length;
             const live = allMatches.filter(m => m.status === 'live').length;
@@ -2538,20 +2396,6 @@ Return ONLY the JSON object, nothing else.`;
             showToast(`✅ Saved: ${match.home} vs ${match.away}\n🎯 ${match.predOutcome} (${match.confidence}%)${aiTag}`, 'success', 4000);
         };
 
-        window.selectPlan = function(name) {
-            if (!isLoggedIn) {
-                showToast('Please login to select a plan', 'warning');
-                openModal(true);
-                return;
-            }
-            if (userData) {
-                userData.plan = name.toLowerCase();
-            }
-            const emoji = name.toLowerCase() === 'free' ? '🆓' : name.toLowerCase() === 'premium' ? '⭐' : '💎';
-            const aiFeature = name.toLowerCase() !== 'free' ? '\n🤖 AI-powered predictions included!' : '';
-            showToast(`${emoji} ${name} plan selected! 🎉${aiFeature}`, 'success', 4000);
-        };
-
         // ================================================================
         //  LOAD & REFRESH DATA
         // ================================================================
@@ -2604,7 +2448,6 @@ Return ONLY the JSON object, nothing else.`;
             renderPredictions();
             renderLeaderboard();
             renderAdmin();
-            renderPlans();
             updateStats();
 
             $('matchesLoader').style.display = 'none';
@@ -2868,6 +2711,7 @@ Return ONLY the JSON object, nothing else.`;
         console.log('🔑 Enter your OpenAI API key in the panel above to activate AI predictions');
         console.log('📝 Get your API key at: https://platform.openai.com/api-keys');
         console.log('✅ All AI buttons are fully functional!');
+        console.log('💰 Billing/Plans section has been removed.');
     </script>
 </body>
 </html>
